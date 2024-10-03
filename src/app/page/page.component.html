@@ -1,0 +1,44 @@
+<nav [tabPanel]="tabPanel" mat-tab-nav-bar>
+  @for (link of links; track link) {
+    <a mat-tab-link
+       (click)="onTabClick(link)"
+       [active]="activeLink == link"> {{ link }} </a>
+  }
+</nav>
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+
+<form [formGroup]="myForm">
+  <mat-form-field style="width: 100%; height: 150px; margin-top: 50px">
+    <textarea formControlName="ctrl1" matInput required></textarea>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select formControlName="ctrl2" required>
+      <mat-option *ngFor="let version of versions" [value]="version">
+        {{ version }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<button (click)="startGeneration()"
+        [disabled]="!myForm.valid"
+        mat-flat-button
+        style="width: 100%; margin-top: 25px; margin-bottom: 25px">
+  GENERATE
+</button>
+
+<div *ngIf="hasGenerated">
+  <h5>Progress</h5>
+  <mat-horizontal-stepper #stepper [linear]="true" animationDuration="500">
+    <mat-step [editable]="false" [stepControl]="firstFormGroup">
+      <ng-template matStepLabel>Code Generation</ng-template>
+    </mat-step>
+    <mat-step *ngFor="let step of amountOfTest" [stepControl]="firstFormGroup">
+      <ng-template matStepLabel>Test</ng-template>
+    </mat-step>
+    <mat-step [stepControl]="firstFormGroup">
+      <ng-template matStepLabel>Done</ng-template>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>
