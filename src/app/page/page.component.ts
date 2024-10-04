@@ -37,9 +37,11 @@ import {RestService} from '../rest.service';
   styleUrl: './page.component.scss'
 })
 export class PageComponent implements OnInit {
-  links: string[] = []
+  languages: string[] = []
+
   versions: string[] = []
-  activeLink = this.links[0];
+  selectedLanguage = this.languages[0];
+
   hasGenerated = false;
   numberOfSteps = 5;
   @ViewChild('stepper') stepper: MatStepper | undefined;
@@ -59,7 +61,7 @@ export class PageComponent implements OnInit {
   }
 
   onTabClick(link: string) {
-    this.activeLink = link;
+    this.selectedLanguage = link;
     this.getVersions(link);
   }
 
@@ -67,7 +69,7 @@ export class PageComponent implements OnInit {
   ngOnInit() {
     this.resteService.getLanguages().subscribe(
       (data: string[]) => {
-        this.links = data;
+        this.languages = data;
       },
       (error) => {
         console.error('Fehler beim Abrufen der Sprachen:', error);
