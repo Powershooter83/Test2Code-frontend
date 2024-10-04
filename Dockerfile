@@ -1,11 +1,13 @@
-FROM node:alpine
+FROM node:18.19.1 AS build
 
-WORKDIR /usr/src/app
-
-COPY . /usr/src/app
-
-RUN npm install -g @angular/cli
-
+WORKDIR /app
+COPY package*.json ./
 RUN npm install
+COPY . .
+RUN npm run build --configuration=production
 
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+FROM nginx:latest
+COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
+
+EXPOSE 80
+EXPOSE 443
