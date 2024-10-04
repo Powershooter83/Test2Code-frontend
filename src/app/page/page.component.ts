@@ -1,6 +1,6 @@
 import {Component, inject, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {MatTab, MatTabGroup, MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
-import {MatFormField} from '@angular/material/form-field';
+import {MatError, MatFormField} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
@@ -9,6 +9,9 @@ import {MatSelect} from '@angular/material/select';
 import {CommonModule, NgForOf} from '@angular/common';
 import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from '@angular/material/stepper';
 import {RestService} from '../rest.service';
+import {Highlight, HighlightAuto} from 'ngx-highlightjs';
+import {HighlightLineNumbers} from 'ngx-highlightjs/line-numbers';
+import {ValidatorService} from './validator.service';
 
 @Component({
   selector: 'app-page',
@@ -28,19 +31,28 @@ import {RestService} from '../rest.service';
     NgForOf,
     MatStep,
     MatStepLabel,
+    MatError,
     MatStepper,
     MatStepperNext,
     MatStepperPrevious,
-    CommonModule
+    CommonModule,
+    Highlight,
+    HighlightAuto,
+    HighlightLineNumbers
   ],
   templateUrl: './page.component.html',
   styleUrl: './page.component.scss'
 })
 export class PageComponent implements OnInit {
   languages: string[] = []
-
   versions: string[] = []
-  selectedLanguage = this.languages[0];
+
+  selectedLanguage: string = "";
+
+  //CODE GENERATION
+  showGeneratedCode: boolean = false;
+  generatedCode: string = "";
+
 
   hasGenerated = false;
   numberOfSteps = 5;
@@ -50,26 +62,29 @@ export class PageComponent implements OnInit {
   amountOfTest: number[] = [];
   private _formBuilder = inject(FormBuilder);
   myForm: FormGroup = this._formBuilder.group({
-    ctrl1: ['', Validators.required],
+    ctrl1: [''],
     ctrl2: ['', Validators.required],
   });
   firstFormGroup = this._formBuilder.group({
     firstCtrl: ['', Validators.required],
   });
 
-  constructor(private renderer: Renderer2, private resteService: RestService) {
+  constructor(private renderer: Renderer2, private restService: RestService, private validator: ValidatorService) {
   }
 
-  onTabClick(link: string) {
-    this.selectedLanguage = link;
-    this.getVersions(link);
+  onTabClick(language: string) {
+    this.selectedLanguage = language;
+    this.getVersions(language);
   }
 
 
   ngOnInit() {
-    this.resteService.getLanguages().subscribe(
+    this.myForm.get('ctrl1')?.setValidators([Validators.required, this.validator.getValidator("Java")]);
+    this.myForm.get('ctrl1')?.updateValueAndValidity();
+    this.restService.getLanguages().subscribe(
       (data: string[]) => {
         this.languages = data;
+        this.onTabClick(this.languages[0])
       },
       (error) => {
         console.error('Fehler beim Abrufen der Sprachen:', error);
@@ -84,7 +99,7 @@ export class PageComponent implements OnInit {
   }
 
   getVersions(language: string) {
-    this.resteService.getVersions(language).subscribe(
+    this.restService.getVersions(language).subscribe(
       (data: string[]) => {
         this.versions = data;
       },
@@ -95,14 +110,15 @@ export class PageComponent implements OnInit {
 
   }
 
+
   startGeneration() {
     let amount = (this.myForm.get('ctrl1')?.value.match(/@Test/g) || []).length
 
     this.amountOfTest = Array.from({length: amount}, (_, i) => i);
-    this.resteService.uploadText(this.myForm.get('ctrl1')?.value).subscribe(response => {
+    this.restService.uploadText(this.myForm.get('ctrl1')?.value).subscribe(response => {
       this.hasGenerated = true;
     });
-    this.resteService.listenToEvents().subscribe(event => {
+    this.restService.listenToEvents().subscribe(event => {
       if (event.successful) {
         this.stepColors.push('green');
       } else {
@@ -114,10 +130,14 @@ export class PageComponent implements OnInit {
       this.firstFormGroup.get('firstCtrl')?.setErrors({required: true});
       this.firstFormGroup.updateValueAndValidity();
       this.setStepColors();
-    });
+
+      if (event.isLast) {
+        this.showGeneratedCode = true;
+        this.generatedCode = event.code;
+      }
+    })
 
   }
-
 
   setStepColors() {
     const stepIcons = document.querySelectorAll('.mat-step-header .mat-step-icon');
