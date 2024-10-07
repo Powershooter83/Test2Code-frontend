@@ -28,4 +28,6 @@ import {PageComponent} from './page/page.component';
 })
 export class AppComponent {
   title = 'frontend';
+
+
 }
