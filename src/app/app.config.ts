@@ -1,5 +1,5 @@
 import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
-import {provideRouter} from '@angular/router';
+import {provideRouter, withComponentInputBinding, withDebugTracing, withRouterConfig} from '@angular/router';
 
 import {routes} from './app.routes';
 import {provideClientHydration} from '@angular/platform-browser';
@@ -9,7 +9,10 @@ import {provideHighlightOptions} from 'ngx-highlightjs';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({eventCoalescing: true}),
-    provideRouter(routes), provideClientHydration(), provideAnimationsAsync(),
+    provideRouter(routes,
+      withDebugTracing(),
+      withComponentInputBinding(),
+      withRouterConfig({paramsInheritanceStrategy: 'always'})), provideClientHydration(), provideAnimationsAsync(),
     provideHttpClient(),
     provideHighlightOptions({
       fullLibraryLoader: () => import('highlight.js'),

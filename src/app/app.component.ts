@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {MatStepperModule} from '@angular/material/stepper';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -9,7 +9,7 @@ import {NgForOf, NgIf} from '@angular/common';
 import {PageComponent} from './page/page.component';
 import {MatToolbar} from '@angular/material/toolbar';
 import {MatIcon} from '@angular/material/icon';
-import {MatListItem, MatNavList} from '@angular/material/list';
+import {MatList, MatListItem, MatNavList} from '@angular/material/list';
 import {
   MatDrawer,
   MatDrawerContainer,
@@ -20,6 +20,10 @@ import {
 import {HistoryService} from '../history.service';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatDivider} from '@angular/material/divider';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
+import {HistoryEntry} from '../models/history.model';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -47,25 +51,42 @@ import {MatDivider} from '@angular/material/divider';
     MatTooltip,
     NgIf,
     MatDivider,
+    MatList,
+    MatMenu,
+    MatMenuItem,
+    MatSlideToggle,
+    MatMenuTrigger,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'frontend';
 
-  constructor(private historyService: HistoryService) {
+  private route = inject(ActivatedRoute);
+
+  constructor(private historyService: HistoryService, route: ActivatedRoute) {
   }
 
-  get history() {
+
+  get history(): HistoryEntry[] {
     return this.historyService.getHistory();
   }
 
   deleteItem(id: string) {
-
+    this.historyService.removeEntry(id);
   }
 
   onButtonClick(id: string) {
 
+    console.log('yeh')
   }
+
+  toggleDarkMode(checked: boolean) {
+
+  }
+
+  ngOnInit(): void {
+  }
+
 }

@@ -1,6 +1,7 @@
 .main-style {
   width: 60%;
   height: 50%;
+  margin-top: -25%;
 }
 
 .wrapper {
@@ -23,7 +24,7 @@
   transform: translateY(-50%);
 }
 
-.mat-mdc-nav-list:hover .mat-mdc-list-item:hover
+.mat-mdc-list-item:hover
 .hover-button {
   display: inline-block;
 }
