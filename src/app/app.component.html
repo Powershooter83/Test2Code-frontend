@@ -1,5 +1,53 @@
-<div class="wrapper">
-  <div class="main-style">
-    <app-page></app-page>
-  </div>
-</div>
+<mat-drawer-container class="example-container" style="height: 100%">
+  <mat-drawer #drawer mode="side" opened="false" style="width: 15%">
+    <div style="display: flex;
+    margin-top: 10px;
+    flex-direction: row;
+    justify-content: space-between">
+      <button (click)="drawer.toggle()" aria-label="Toggle drawer"
+              mat-icon-button>
+        <mat-icon>view_sidebar</mat-icon>
+      </button>
+      <button (click)="drawer.toggle()" aria-label="Toggle drawer" mat-icon-button>
+        <mat-icon>add_circle</mat-icon>
+      </button>
+    </div>
+    <h2 style="font-size: 16px; font-weight: bold; margin-left: 15px; margin-bottom: -15px">Last Tests</h2>
+    <mat-divider style="margin-right: 10px; margin-left: 10px; margin-top: 5px;"></mat-divider>
+    <mat-nav-list style="max-height: 80%; overflow-y: auto;">
+      <a *ngFor="let item of history" class="chat_history_item" href="#" mat-list-item>
+        {{ item.name }}
+        <button (click)="onButtonClick(item.id)" aria-label="Button"
+                class="hover-button"
+                mat-icon-button matTooltip="Info about the action">
+          <mat-icon style="font-size: 18px">delete</mat-icon>
+        </button>
+      </a>
+    </mat-nav-list>
+
+  </mat-drawer>
+
+  <mat-drawer-content>
+    <mat-toolbar>
+      <button (click)="drawer.toggle()" *ngIf="!drawer.opened" aria-label="Toggle drawer"
+              mat-icon-button>
+        <mat-icon>view_sidebar</mat-icon>
+      </button>
+      <button (click)="drawer.toggle()" *ngIf="!drawer.opened" aria-label="Toggle drawer" mat-icon-button>
+        <mat-icon>add_circle</mat-icon>
+      </button>
+      <span>Test2Code</span>
+      <span class="example-spacer"></span>
+      <button aria-label="Settings" mat-icon-button style="margin-left:auto;">
+        <mat-icon>settings</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <div class="wrapper">
+      <div class="main-style">
+        <app-page></app-page>
+      </div>
+    </div>
+
+  </mat-drawer-content>
+</mat-drawer-container>
