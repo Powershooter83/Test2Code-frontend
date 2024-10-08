@@ -4,14 +4,16 @@ import {MatError, MatFormField} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
-import {MatOption} from '@angular/material/core';
-import {MatSelect} from '@angular/material/select';
+import {MatOption, MatSelect} from '@angular/material/select';
 import {CommonModule, NgForOf} from '@angular/common';
 import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from '@angular/material/stepper';
 import {RestService} from '../rest.service';
 import {Highlight, HighlightAuto} from 'ngx-highlightjs';
 import {HighlightLineNumbers} from 'ngx-highlightjs/line-numbers';
 import {ValidatorService} from './validator.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {v4 as uuidv4} from 'uuid';
+import {HistoryService} from '../../history.service';
 
 @Component({
   selector: 'app-page',
@@ -60,6 +62,8 @@ export class PageComponent implements OnInit {
   formGroups: FormGroup[] = [];
   stepColors: string[] = [];
   amountOfTest: number[] = [];
+
+
   private _formBuilder = inject(FormBuilder);
   myForm: FormGroup = this._formBuilder.group({
     ctrl1: [''],
@@ -68,8 +72,14 @@ export class PageComponent implements OnInit {
   firstFormGroup = this._formBuilder.group({
     firstCtrl: ['', Validators.required],
   });
+  private activatedRoute = inject(ActivatedRoute);
 
-  constructor(private renderer: Renderer2, private restService: RestService, private validator: ValidatorService) {
+  constructor(private renderer: Renderer2,
+              private restService: RestService,
+              private validator: ValidatorService,
+              private history: HistoryService,
+              private router: Router,
+              private route: ActivatedRoute) {
   }
 
   onTabClick(language: string) {
@@ -79,7 +89,28 @@ export class PageComponent implements OnInit {
 
 
   ngOnInit() {
-    this.myForm.get('ctrl1')?.setValidators([Validators.required, this.validator.getValidator("Java")]);
+    this.route.paramMap.subscribe((params) => {
+      console.log(params)
+    });
+
+    /*  this.act.paramMap.subscribe(params => {
+        console.log(params)
+        let uuid = params['uuid'];
+
+        let entry: HistoryEntry | undefined = this.history.getEntry(uuid);
+        if (entry == undefined) {
+          console.log(uuid)
+          this.router.navigate(['/']);
+        } else {
+          this.myForm.get('ctrl1')?.setValue(entry.testCases);
+        }
+
+      });
+
+     */
+
+
+    this.myForm.get('ctrl1')?.setValidators([Validators.required, this.validator.getValidator('Python')]);
     this.myForm.get('ctrl1')?.updateValueAndValidity();
     this.restService.getLanguages().subscribe(
       (data: string[]) => {
@@ -110,12 +141,23 @@ export class PageComponent implements OnInit {
 
   }
 
+  generateUuid64(): string {
+    // Generiere eine UUID (36 Zeichen) und füge zufällige Zeichen hinzu, um 64 Zeichen zu erreichen
+    let uuid = uuidv4(); // 36 Zeichen
+    let extraRandom = uuidv4().replace(/-/g, ''); // Zusätzliche 32 zufällige Zeichen
+    return uuid + extraRandom;
+  }
+
 
   startGeneration() {
+    const uuid = this.generateUuid64();
+    this.router.navigate([`/${uuid}`]);
+    this.history.createEntry(uuid, this.myForm.get('ctrl1')?.value)
+
     let amount = (this.myForm.get('ctrl1')?.value.match(/@Test/g) || []).length
 
     this.amountOfTest = Array.from({length: amount}, (_, i) => i);
-    this.restService.uploadText(this.myForm.get('ctrl1')?.value).subscribe(response => {
+    this.restService.uploadText(this.myForm.get('ctrl1')?.value).subscribe(() => {
       this.hasGenerated = true;
     });
     this.restService.listenToEvents().subscribe(event => {
@@ -148,4 +190,5 @@ export class PageComponent implements OnInit {
       }
     });
   }
+
 }
