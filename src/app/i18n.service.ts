@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import {i18n} from '../models/i18n.model';
 import de_json from '../assets/i18n/de.json';
 import en_json from '../assets/i18n/en.json';
+import fr_json from '../assets/i18n/fr.json';
+
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +32,9 @@ export class I18nService {
     switch (this.currentLanguage) {
       case 'de':
         this.loadTranslationsFromFile(de_json);
+        break;
+      case 'fr':
+        this.loadTranslationsFromFile(fr_json);
         break;
       default:
         this.loadTranslationsFromFile(en_json);
