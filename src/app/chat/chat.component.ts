@@ -2,7 +2,7 @@ import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angul
 import {MatFormField} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
-import {NgForOf, NgIf} from '@angular/common';
+import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {MatFabButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -10,6 +10,10 @@ import {ChatState} from '../../models/state.model';
 import {MatInput} from '@angular/material/input';
 import {I18nService} from '../i18n.service';
 import {i18n} from '../../models/i18n.model';
+import {HighlightLineNumbers} from 'ngx-highlightjs/line-numbers';
+import {HighlightAuto} from 'ngx-highlightjs';
+import {ThemingService} from '../theming.service';
+import {ConnectorService} from '../connector.service';
 
 @Component({
   selector: 'app-chat',
@@ -23,7 +27,10 @@ import {i18n} from '../../models/i18n.model';
     MatFabButton,
     MatIcon,
     NgIf,
-    MatInput
+    MatInput,
+    HighlightLineNumbers,
+    HighlightAuto,
+    NgClass
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -36,14 +43,23 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   input_test_textarea: any;
 
   versions: string[] = ["3.5", "3.6", "3.11"]
-  languages: string[] = ["Python", "Java"]
+  languages: string[] = [];
 
   currenStep: ChatState = ChatState.SELECT_LANGUAGE;
   currentStepIndex: number = 0;
+  GENERATED_CODE: string =
+    `def add_numbers(a, b):
+        return a + b`;
   protected readonly i18n = i18n;
   @ViewChild('scrollBottom') private scrollBottom!: ElementRef;
 
-  constructor(protected i18nService: I18nService) {
+  constructor(protected i18nService: I18nService,
+              private themingService: ThemingService,
+              private connectorService: ConnectorService) {
+  }
+
+  get darkMode(): boolean {
+    return this.themingService.isDarkmode();
   }
 
   continue() {
@@ -103,6 +119,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     this.scrollToBottom();
+    this.connectorService.getLanguages().subscribe(
+      (languages) => {
+        console.log(languages);
+        this.languages = languages;
+      }
+    );
   }
 
   ngAfterViewChecked() {

@@ -1,4 +1,4 @@
-<div class="container">
+<div [ngClass]="{'dark-theme': darkMode}" class="container">
   <div class="chat" style="width: 100%; height: 100%; position: relative">
     <div #scrollBottom class="messages-chat">
       <div class="message">
@@ -67,6 +67,9 @@
       </div>
       <div *ngIf="currentStepIndex > 5" class="message text-only">
         <p class="text">Der Docker Container wurde gestartet</p>
+      </div>
+      <div *ngIf="currentStepIndex > 5" class="message text-only">
+        <pre class="text"><code [highlightAuto]="GENERATED_CODE" lineNumbers></code></pre>
       </div>
     </div>
     <div class="submit-box">

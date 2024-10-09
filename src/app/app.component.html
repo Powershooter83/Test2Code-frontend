@@ -1,60 +1,7 @@
-<mat-drawer-container class="example-container" style="height: 100%">
-  <mat-drawer #drawer mode="side" opened="false" style="width: 15%">
-    <div style="display: flex;
-    margin-top: 10px;
-    flex-direction: row;
-    justify-content: space-between">
-      <button (click)="drawer.toggle()" aria-label="Toggle drawer"
-              mat-icon-button>
-        <mat-icon>view_sidebar</mat-icon>
-      </button>
-      <button (click)="drawer.toggle()" aria-label="Toggle drawer" mat-icon-button>
-        <mat-icon>add_circle</mat-icon>
-      </button>
-    </div>
-    <h2 style="font-size: 16px; font-weight: bold; margin-left: 15px; margin-bottom: -15px">Last Tests</h2>
-    <mat-divider style="margin-right: 10px; margin-left: 10px; margin-top: 5px;"></mat-divider>
-    <mat-nav-list style="max-height: 80%; overflow-y: auto;">
-      <a *ngFor="let entry of history" class="chat_history_item" href="{{entry.id}}" mat-list-item
-      >
-        <p style="margin-bottom: 0"> {{ entry.method }}</p>
-        <button (click)="deleteItem(entry.id)" mat-icon-button matListItemMeta>
-          <mat-icon style="font-size: 18px; margin-top: 2px">delete</mat-icon>
-        </button>
-      </a>
-    </mat-nav-list>
-
-  </mat-drawer>
-
-  <mat-drawer-content>
-    <mat-toolbar>
-      <button (click)="drawer.toggle()" *ngIf="!drawer.opened" aria-label="Toggle drawer"
-              mat-icon-button>
-        <mat-icon>view_sidebar</mat-icon>
-      </button>
-      <button (click)="drawer.toggle()" *ngIf="!drawer.opened" aria-label="Toggle drawer" mat-icon-button>
-        <mat-icon>add_circle</mat-icon>
-      </button>
-      <span>Test2Code</span>
-      <span class="example-spacer"></span>
-      <button aria-label="Settings" mat-icon-button style="margin-left:auto;">
-        <mat-icon [matMenuTriggerFor]="settingsMenu">settings</mat-icon>
-      </button>
-    </mat-toolbar>
-
-    <div class="wrapper">
-      <div class="main-style">
-        <app-chat></app-chat>
-      </div>
-    </div>
-
-  </mat-drawer-content>
-</mat-drawer-container>
-
-<mat-menu #settingsMenu="matMenu">
-  <div style="display: flex; align-items: center; padding: 8px 16px;">
-    <span style="margin-right: 10px">Dark Mode</span>
-    <mat-slide-toggle (change)="toggleDarkMode($event.checked)" (click)="$event.stopPropagation()">
-    </mat-slide-toggle>
+<div [ngClass]="{'dark-theme': darkMode}"
+     class="wrapper"
+     style="height: 100%">
+  <div class="main-style">
+    <app-chat></app-chat>
   </div>
-</mat-menu>
+</div>

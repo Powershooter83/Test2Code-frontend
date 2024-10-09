@@ -1,15 +1,38 @@
-body {
-  padding: 5%;
-  background-color: #F5F5F5;
+$light-background: #FFF;
+$dark-background: #282828;
+$dark-background_ai_bubble: #3f3f3f;
+
+.dark-theme {
+  background-color: $dark-background;
+
+  .container {
+    background-color: $dark-background;
+  }
+
+  .messages-chat {
+    background-color: $dark-background;
+  }
+
+  .chat .messages-chat .text {
+    background-color: $dark-background_ai_bubble;
+  }
+
+  .submit-box {
+    background-color: $dark-background;
+  }
+
+  .response .text {
+    background-color: #575757 !important;
+  }
 }
+
 
 .container {
   padding: 0;
-  background-color: #FFF;
+  background-color: $light-background;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   height: 700px;
 }
-
 
 .online {
   position: relative;
