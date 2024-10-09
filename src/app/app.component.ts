@@ -24,6 +24,7 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {HistoryEntry} from '../models/history.model';
 import {ActivatedRoute} from '@angular/router';
+import {ChatComponent} from './chat/chat.component';
 
 @Component({
   selector: 'app-root',
@@ -51,11 +52,13 @@ import {ActivatedRoute} from '@angular/router';
     MatTooltip,
     NgIf,
     MatDivider,
+    FormsModule,
     MatList,
     MatMenu,
     MatMenuItem,
     MatSlideToggle,
     MatMenuTrigger,
+    ChatComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -86,7 +89,8 @@ export class AppComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
+
   }
 
 }

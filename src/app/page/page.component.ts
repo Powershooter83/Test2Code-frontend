@@ -1,5 +1,5 @@
 import {Component, inject, Renderer2, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatStep, MatStepLabel, MatStepper} from '@angular/material/stepper';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HistoryService} from '../../service/history.service';
@@ -24,6 +24,7 @@ import {v4 as uuidv4} from 'uuid';
     MatStep,
     MatStepLabel,
     HighlightAuto,
+    FormsModule,
     HighlightLineNumbers,
     NgIf,
     MatTabNavPanel,
@@ -36,7 +37,8 @@ import {v4 as uuidv4} from 'uuid';
     MatInput,
     MatTabLink,
     MatTabNav,
-    MatButton
+    MatButton,
+    FormsModule
   ],
   templateUrl: './page.component.html',
   styleUrl: './page.component.scss'
@@ -58,8 +60,9 @@ export class PageComponent {
   formGroups: FormGroup[] = [];
   stepColors: string[] = [];
   amountOfTest: number[] = [];
-
-
+  currentQuery = 'haalo';
+  selectedVersion = 'Python 3.6';
+  protected readonly name = name;
   private _formBuilder = inject(FormBuilder);
   myForm: FormGroup = this._formBuilder.group({
     ctrl1: [''],
@@ -68,7 +71,6 @@ export class PageComponent {
   firstFormGroup = this._formBuilder.group({
     firstCtrl: ['', Validators.required],
   });
-  private activatedRoute = inject(ActivatedRoute);
 
   constructor(private renderer: Renderer2,
               private restService: RestService,
@@ -144,7 +146,6 @@ export class PageComponent {
     return uuid + extraRandom;
   }
 
-
   startGeneration() {
     const uuid = this.generateUuid64();
     this.router.navigate([`/${uuid}`]);
@@ -186,5 +187,4 @@ export class PageComponent {
       }
     });
   }
-
 }
