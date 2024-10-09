@@ -8,14 +8,14 @@
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_INTRODUCTION) }}</p>
       </div>
       <div class="message text-only">
-        <p class="text"> Gegen welche Programmiersprache darf ich den Code testen?</p>
+        <p class="text">{{ i18nService.getTranslation(i18n.BOT_LANGUAGE) }}</p>
       </div>
       <div class="message text-only">
         <div class="response">
           <mat-form-field class="text">
             <mat-select [(ngModel)]="input_language_dropdown"
                         [disabled]="currentStepIndex >= 1"
-                        placeholder="Programmiersprache">
+                        placeholder="{{ i18nService.getTranslation(i18n.FORM_LANGUAGE) }}">
               <mat-option *ngFor="let language of languages" [value]="language">
                 {{ language }}
               </mat-option>
@@ -28,14 +28,14 @@
              class="photo">
           <div class="online"></div>
         </div>
-        <p class="text">Gute Auswahl! Welche Version verwendest du? </p>
+        <p class="text">{{ i18nService.getTranslation(i18n.BOT_VERSION) }}</p>
       </div>
       <div *ngIf="currentStepIndex > 1" class="message text-only">
         <div class="response">
           <mat-form-field class="text">
             <mat-select [(ngModel)]="input_version_dropdown"
                         [disabled]="currentStepIndex >= 3"
-                        placeholder="Version"
+                        placeholder="{{ i18nService.getTranslation(i18n.FORM_VERSION) }}"
             >
               <mat-option *ngFor="let version of versions" [value]="version">
                 {{ version }}
@@ -49,7 +49,7 @@
              class="photo">
           <div class="online"></div>
         </div>
-        <p class="text">Perfekt, sende mir nun den Test...</p>
+        <p class="text">{{ i18nService.getTranslation(i18n.BOT_TESTCASES) }}</p>
       </div>
       <div *ngIf="currentStepIndex > 3" class="message text-only">
         <div class="response">
@@ -63,10 +63,10 @@
              class="photo">
           <div class="online"></div>
         </div>
-        <p class="text">Der Test wurde hochgeladen, warte ein Moment</p>
+        <p class="text">{{ i18nService.getTranslation(i18n.BOT_TESTCASES_UPLOADED) }}</p>
       </div>
       <div *ngIf="currentStepIndex > 5" class="message text-only">
-        <p class="text">Der Docker Container wurde gestartet</p>
+        <p class="text">{{ i18nService.getTranslation(i18n.BOT_DOCKER_STARTED) }}</p>
       </div>
       <div *ngIf="currentStepIndex > 5" class="message text-only">
         <pre class="text"><code [highlightAuto]="GENERATED_CODE" lineNumbers></code></pre>
