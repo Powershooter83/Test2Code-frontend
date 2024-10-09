@@ -1,3 +1,10 @@
 {
-  "BOT_INTRODUCTION": "HALLO! Ich bins Bot"
+  "BOT_INTRODUCTION": "Guten Tag! Ich helfe dir dabei, deine Testcases in Code umzuwandeln!",
+  "BOT_LANGUAGE": "In welcher Programmiersprache sind deine Testcases geschrieben?",
+  "BOT_VERSION": "Welche Version der Programmiersprache hast du verwendet?",
+  "BOT_TESTCASES": "Perfekt, du kannst nun deinen Test eingeben.",
+  "BOT_TESTCASES_UPLOADED": "Der Test wurde hochgeladen. Bitte warte einen Moment.",
+  "BOT_DOCKER_STARTED": "Der Docker Container wurde gestartet.",
+  "FORM_LANGUAGE": "Programmiersprache",
+  "FORM_VERSION": "Version"
 }

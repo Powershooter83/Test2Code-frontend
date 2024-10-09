@@ -1,0 +1,10 @@
+{
+  "BOT_INTRODUCTION": "Bonjour! Je t'aide à convertir tes cas de test en code!",
+  "BOT_LANGUAGE": "Dans quel langage de programmation tes cas de test sont-ils écrits ?",
+  "BOT_VERSION": "Dans quel langage de programmation tes cas de test sont-ils écrits ?",
+  "BOT_TESTCASES": "Parfait, tu peux maintenant saisir ton test.",
+  "BOT_TESTCASES_UPLOADED": "Le test a été téléchargé. Veuillez patienter un instant.",
+  "BOT_DOCKER_STARTED": "Le conteneur Docker a été lancé.",
+  "FORM_LANGUAGE": "Langage de programmation",
+  "FORM_VERSION": "Version"
+}
