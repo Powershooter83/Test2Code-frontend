@@ -6,4 +6,5 @@ export interface HistoryEntry {
   language: string;
   version: string;
   generatedCode: string;
+  currentStep: number;
 }

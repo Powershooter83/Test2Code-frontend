@@ -9,21 +9,10 @@ export class HistoryService {
   constructor() {
   }
 
-  createEntry(uuid: string, testCases: string) {
-    const entry: HistoryEntry = {
-      id: uuid,
-      method: this.extractFunctionNames(testCases)[0],
-      created_at: new Date().toISOString(),
-      version: '3.11',
-      language: 'Python',
-      testCases: testCases,
-      generatedCode: 'def test()'
-    };
-
+  createEntry(entry: HistoryEntry) {
     const entries = localStorage.getItem('history');
     const entriesArray = entries ? JSON.parse(entries) : [];
-    entriesArray.push(entry);
-
+    entriesArray.unshift(entry);
     localStorage.setItem('history', JSON.stringify(entriesArray));
   }
 
@@ -50,7 +39,68 @@ export class HistoryService {
     }
   }
 
-  getEntry(id: string): HistoryEntry | undefined {
+  addLanguage(activeHistoryId: string, input_languag_dropdown: any) {
+    let entry: HistoryEntry | undefined = this.getEntry(activeHistoryId);
+    if (entry == undefined) {
+      return;
+    }
+    entry!.language = input_languag_dropdown;
+    entry!.method = 'STEP: Version selection';
+    this.updateEntry(entry);
+  }
+
+  addVersion(activeHistoryId: string, input_version_dropdown: any) {
+    let entry: HistoryEntry | undefined = this.getEntry(activeHistoryId);
+    if (entry == undefined) {
+      return;
+    }
+    entry!.version = input_version_dropdown;
+    entry!.method = 'STEP: Test upload';
+    this.updateEntry(entry);
+  }
+
+  addTests(activeHistoryId: string, input_tests_textarea: any) {
+    let entry: HistoryEntry | undefined = this.getEntry(activeHistoryId);
+    if (entry == undefined) {
+      return;
+    }
+    entry!.testCases = input_tests_textarea;
+    entry!.method = this.extractFunctionNames(input_tests_textarea)[0];
+    this.updateEntry(entry);
+  }
+
+  updateIndex(activeHistoryId: string, currentStepIndex: number) {
+    let entry: HistoryEntry | undefined = this.getEntry(activeHistoryId);
+    if (entry == undefined) {
+      return;
+    }
+    entry!.currentStep = currentStepIndex;
+    this.updateEntry(entry);
+  }
+
+  addGeneratedCode(activeHistoryId: string, resultImplementation: string) {
+    let entry: HistoryEntry | undefined = this.getEntry(activeHistoryId);
+    if (entry == undefined) {
+      return;
+    }
+    entry!.generatedCode = resultImplementation;
+    this.updateEntry(entry);
+  }
+
+  private updateEntry(entry: HistoryEntry) {
+    const entries = localStorage.getItem('history');
+
+
+    if (entries) {
+      const entriesArray: HistoryEntry[] = JSON.parse(entries);
+      const updatedEntries = entriesArray.map(e =>
+        e.id === entry.id ? {...e, ...entry} : e
+      );
+      localStorage.setItem('history', JSON.stringify(updatedEntries));
+    }
+  }
+
+  private getEntry(id: string): HistoryEntry | undefined {
     const entries = localStorage.getItem('history');
     if (entries) {
       const entriesArray: HistoryEntry[] = JSON.parse(entries);

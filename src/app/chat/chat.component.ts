@@ -16,6 +16,8 @@ import {ThemingService} from '../theming.service';
 import {ConnectorService} from '../connector.service';
 import {HistoryEntry} from '../../models/history.model';
 import {v4 as uuidv4} from 'uuid';
+import {HistoryService} from '../../service/history.service';
+import {SettingsComponent} from '../settings/settings.component';
 
 @Component({
   selector: 'app-chat',
@@ -33,7 +35,8 @@ import {v4 as uuidv4} from 'uuid';
     HighlightLineNumbers,
     HighlightAuto,
     NgClass,
-    MatIconButton
+    MatIconButton,
+    SettingsComponent
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -45,60 +48,25 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   input_language_dropdown: any;
   input_test_textarea: any;
 
-  activeHistoryId: string = '1';
+  activeHistoryId!: string;
 
   versions: string[] = [];
   languages: string[] = [];
 
   currenStep: ChatState = ChatState.SELECT_LANGUAGE;
   currentStepIndex: number = 0;
-  GENERATED_CODE: string =
-    `def add_numbers(a, b):
-        return a + b`;
-  mockHistoryEntries: HistoryEntry[] = [
-    {
-      id: '1',
-      method: 'testMethod1',
-      created_at: '2024-10-11T10:00:00Z',
-      testCases: 'Test Case 1',
-      language: 'Python',
-      version: '3.11',
-      generatedCode: 'def test()'
-    },
-    {
-      id: '2',
-      method: 'testMethod2',
-      created_at: '2024-10-11T10:05:00Z',
-      testCases: 'Test Case 2',
-      language: 'Python',
-      version: '3.11',
-      generatedCode: 'def test()'
-    },
-    {
-      id: '3',
-      method: 'testMethod3',
-      created_at: '2024-10-11T10:10:00Z',
-      testCases: 'Test Case 3',
-      language: 'Python',
-      version: '3.11',
-      generatedCode: 'def test()'
-    },
-    {
-      id: '4',
-      method: 'testMethod4',
-      created_at: '2024-10-11T10:15:00Z',
-      testCases: 'Test Case 4',
-      language: 'Python',
-      version: '3.11',
-      generatedCode: 'def test()'
-    },
-  ];
+  GENERATED_CODE: string = '';
+
+  isDrawerExtended: boolean = false;
+  historyEntries: HistoryEntry[] = [];
+  settingsOpen: boolean = false;
   protected readonly i18n = i18n;
   @ViewChild('scrollBottom') private scrollBottom!: ElementRef;
 
   constructor(protected i18nService: I18nService,
               private themingService: ThemingService,
-              private connectorService: ConnectorService) {
+              private connectorService: ConnectorService,
+              private historyService: HistoryService) {
   }
 
   get darkMode(): boolean {
@@ -111,6 +79,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         this.increaseCurrentStep();
         this.currenStep = ChatState.SELECT_VERSION;
         this.loadVersionsForLanguage();
+        this.historyService.addLanguage(this.activeHistoryId, this.input_language_dropdown);
 
         setTimeout(() => {
           this.increaseCurrentStep();
@@ -119,6 +88,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       case ChatState.SELECT_VERSION:
         this.increaseCurrentStep();
         this.currenStep = ChatState.UPLOAD_TEST;
+        this.historyService.addVersion(this.activeHistoryId, this.input_version_dropdown);
 
         setTimeout(() => {
           this.increaseCurrentStep();
@@ -127,6 +97,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       case ChatState.UPLOAD_TEST:
         this.increaseCurrentStep();
         this.currenStep = ChatState.WAITING_FOR_RESULTS;
+        this.historyService.addTests(this.activeHistoryId, this.input_test_textarea);
         this.uploadTest();
 
         for (let i = 1; i <= 4; i++) {
@@ -141,6 +112,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   increaseCurrentStep() {
     this.currentStepIndex++;
     this.scrollToBottom();
+    this.historyService.updateIndex(this.activeHistoryId, this.currentStepIndex);
   }
 
   isSendButtonDisabled(): boolean {
@@ -163,6 +135,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit() {
+    this.historyEntries = this.historyService.getHistory();
+    if (this.historyEntries.length == 0) {
+      this.newChat();
+      this.historyEntries = this.historyService.getHistory();
+    }
+    this.changeHistoryElement(this.historyEntries[0]);
     this.scrollToBottom();
     this.connectorService.getLanguages().subscribe(
       (languages) => {
@@ -206,29 +184,33 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.input_version_dropdown = entry.version;
     this.input_language_dropdown = entry.language;
     this.GENERATED_CODE = entry.generatedCode;
-    this.currenStep = ChatState.SELECT_VERSION;
-    this.currentStepIndex = 10;
+    this.currenStep = ChatState.SELECT_LANGUAGE;
+    this.currentStepIndex = entry.currentStep;
   }
 
   newChat() {
     this.GENERATED_CODE = '';
     this.currenStep = ChatState.SELECT_LANGUAGE;
-    this.currenStep = 0;
+    this.currentStepIndex = 0;
     this.input_version_dropdown = '';
     this.input_test_textarea = '';
     this.input_version_dropdown = '';
 
     let uuid = uuidv4();
 
-    this.mockHistoryEntries.unshift({
+    let historyEntry = {
       id: uuid,
-      method: 'TBD..',
+      method: 'STEP: language selection',
       created_at: new Date().toISOString(),
       version: '',
       language: '',
       testCases: '',
-      generatedCode: ''
-    });
+      generatedCode: '',
+      currentStep: 0,
+    }
+
+    this.historyEntries.unshift(historyEntry);
+    this.historyService.createEntry(historyEntry);
 
     this.activeHistoryId = uuid;
   }
@@ -246,7 +228,15 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       this.input_version_dropdown,
       this.input_test_textarea).subscribe(
       (response) => {
-        console.log(response);
+        this.currentStepIndex++;
+        let resultImplementation = "";
+        response.test2code.forEach((item: any) => {
+          const implementation = item.implementation;
+          resultImplementation += implementation + "\n";
+        });
+
+        this.GENERATED_CODE = resultImplementation;
+        this.historyService.addGeneratedCode(this.activeHistoryId, resultImplementation);
       }
     )
   }
