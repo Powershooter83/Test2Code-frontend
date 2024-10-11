@@ -1,4 +1,34 @@
 <div [ngClass]="{'dark-theme': darkMode}" class="container">
+  <nav class="menu">
+    <ul class="items">
+      <li class="item">
+        <mat-icon (click)="newChat()">add_circle</mat-icon>
+      </li>
+      <li class="item item-active">
+        <mat-icon>forum</mat-icon>
+      </li>
+      <li class="item">
+        <mat-icon>settings</mat-icon>
+      </li>
+    </ul>
+  </nav>
+  <div class="history">
+    <div (click)="changeHistoryElement(entry)"
+         (keypress)="changeHistoryElement(entry)"
+         *ngFor="let entry of mockHistoryEntries"
+         [ngClass]="{'history-element-active': activeHistoryId === entry.id}"
+         class="history-element">
+
+      <p class="testcase">{{ entry.method }}</p>
+
+      <div class="informations">
+        <div class="information-element">{{ entry.language }}</div>
+        <div class="information-element">{{ formatTimeDifference(entry.created_at) }}</div>
+      </div>
+
+    </div>
+
+  </div>
   <div class="chat" style="width: 100%; height: 100%; position: relative">
     <div #scrollBottom class="messages-chat">
       <div class="message">

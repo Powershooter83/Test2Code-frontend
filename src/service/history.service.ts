@@ -14,7 +14,10 @@ export class HistoryService {
       id: uuid,
       method: this.extractFunctionNames(testCases)[0],
       created_at: new Date().toISOString(),
-      testCases: testCases
+      version: '3.11',
+      language: 'Python',
+      testCases: testCases,
+      generatedCode: 'def test()'
     };
 
     const entries = localStorage.getItem('history');

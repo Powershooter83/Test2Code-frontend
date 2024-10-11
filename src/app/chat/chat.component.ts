@@ -4,7 +4,7 @@ import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {MatFabButton} from '@angular/material/button';
+import {MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {ChatState} from '../../models/state.model';
 import {MatInput} from '@angular/material/input';
@@ -14,140 +14,240 @@ import {HighlightLineNumbers} from 'ngx-highlightjs/line-numbers';
 import {HighlightAuto} from 'ngx-highlightjs';
 import {ThemingService} from '../theming.service';
 import {ConnectorService} from '../connector.service';
+import {HistoryEntry} from '../../models/history.model';
+import {v4 as uuidv4} from 'uuid';
 
 @Component({
-    selector: 'app-chat',
-    standalone: true,
-    imports: [
-        MatFormField,
-        MatOption,
-        MatSelect,
-        NgForOf,
-        FormsModule,
-        MatFabButton,
-        MatIcon,
-        NgIf,
-        MatInput,
-        HighlightLineNumbers,
-        HighlightAuto,
-        NgClass
-    ],
-    templateUrl: './chat.component.html',
-    styleUrl: './chat.component.scss'
+  selector: 'app-chat',
+  standalone: true,
+  imports: [
+    MatFormField,
+    MatOption,
+    MatSelect,
+    NgForOf,
+    FormsModule,
+    MatFabButton,
+    MatIcon,
+    NgIf,
+    MatInput,
+    HighlightLineNumbers,
+    HighlightAuto,
+    NgClass,
+    MatIconButton
+  ],
+  templateUrl: './chat.component.html',
+  styleUrl: './chat.component.scss'
 })
 export class ChatComponent implements OnInit, AfterViewChecked {
-    BOT_LOGO_URL = 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'
+  BOT_LOGO_URL = 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'
 
-    input_version_dropdown: any;
-    input_language_dropdown: any;
-    input_test_textarea: any;
+  input_version_dropdown: any;
+  input_language_dropdown: any;
+  input_test_textarea: any;
 
-    versions: string[] = [];
-    languages: string[] = [];
+  activeHistoryId: string = '1';
 
-    currenStep: ChatState = ChatState.SELECT_LANGUAGE;
-    currentStepIndex: number = 0;
-    GENERATED_CODE: string =
-        `def add_numbers(a, b):
+  versions: string[] = [];
+  languages: string[] = [];
+
+  currenStep: ChatState = ChatState.SELECT_LANGUAGE;
+  currentStepIndex: number = 0;
+  GENERATED_CODE: string =
+    `def add_numbers(a, b):
         return a + b`;
-    protected readonly i18n = i18n;
-    @ViewChild('scrollBottom') private scrollBottom!: ElementRef;
+  mockHistoryEntries: HistoryEntry[] = [
+    {
+      id: '1',
+      method: 'testMethod1',
+      created_at: '2024-10-11T10:00:00Z',
+      testCases: 'Test Case 1',
+      language: 'Python',
+      version: '3.11',
+      generatedCode: 'def test()'
+    },
+    {
+      id: '2',
+      method: 'testMethod2',
+      created_at: '2024-10-11T10:05:00Z',
+      testCases: 'Test Case 2',
+      language: 'Python',
+      version: '3.11',
+      generatedCode: 'def test()'
+    },
+    {
+      id: '3',
+      method: 'testMethod3',
+      created_at: '2024-10-11T10:10:00Z',
+      testCases: 'Test Case 3',
+      language: 'Python',
+      version: '3.11',
+      generatedCode: 'def test()'
+    },
+    {
+      id: '4',
+      method: 'testMethod4',
+      created_at: '2024-10-11T10:15:00Z',
+      testCases: 'Test Case 4',
+      language: 'Python',
+      version: '3.11',
+      generatedCode: 'def test()'
+    },
+  ];
+  protected readonly i18n = i18n;
+  @ViewChild('scrollBottom') private scrollBottom!: ElementRef;
 
-    constructor(protected i18nService: I18nService,
-                private themingService: ThemingService,
-                private connectorService: ConnectorService) {
-    }
+  constructor(protected i18nService: I18nService,
+              private themingService: ThemingService,
+              private connectorService: ConnectorService) {
+  }
 
-    get darkMode(): boolean {
-        return this.themingService.isDarkmode();
-    }
+  get darkMode(): boolean {
+    return this.themingService.isDarkmode();
+  }
 
-    continue() {
-        switch (this.currenStep) {
-            case ChatState.SELECT_LANGUAGE:
-                this.increaseCurrentStep();
-                this.currenStep = ChatState.SELECT_VERSION;
-                this.loadVersionsForLanguage();
+  continue() {
+    switch (this.currenStep) {
+      case ChatState.SELECT_LANGUAGE:
+        this.increaseCurrentStep();
+        this.currenStep = ChatState.SELECT_VERSION;
+        this.loadVersionsForLanguage();
 
-                setTimeout(() => {
-                    this.increaseCurrentStep();
-                }, 1000);
-                break;
-            case ChatState.SELECT_VERSION:
-                this.increaseCurrentStep();
-                this.currenStep = ChatState.UPLOAD_TEST;
+        setTimeout(() => {
+          this.increaseCurrentStep();
+        }, 1000);
+        break;
+      case ChatState.SELECT_VERSION:
+        this.increaseCurrentStep();
+        this.currenStep = ChatState.UPLOAD_TEST;
 
-                setTimeout(() => {
-                    this.increaseCurrentStep();
-                }, 1000);
-                break;
-            case ChatState.UPLOAD_TEST:
-                this.increaseCurrentStep();
-                this.currenStep = ChatState.WAITING_FOR_RESULTS;
-                this.uploadTest();
+        setTimeout(() => {
+          this.increaseCurrentStep();
+        }, 1000);
+        break;
+      case ChatState.UPLOAD_TEST:
+        this.increaseCurrentStep();
+        this.currenStep = ChatState.WAITING_FOR_RESULTS;
+        this.uploadTest();
 
-                for (let i = 1; i <= 4; i++) {
-                    setTimeout(() => {
-                        this.increaseCurrentStep();
-                    }, i * 1000);
-                }
-
+        for (let i = 1; i <= 4; i++) {
+          setTimeout(() => {
+            this.increaseCurrentStep();
+          }, i * 1000);
         }
-    }
-
-    increaseCurrentStep() {
-        this.currentStepIndex++;
-        this.scrollToBottom();
-    }
-
-    isSendButtonDisabled(): boolean {
-        switch (this.currenStep) {
-            case ChatState.SELECT_VERSION:
-                return !this.input_version_dropdown;
-            case ChatState.SELECT_LANGUAGE:
-                return !this.input_language_dropdown;
-            case ChatState.UPLOAD_TEST:
-                return !this.input_test_textarea;
-        }
-        return false;
-    }
-
-    scrollToBottom(): void {
-        try {
-            this.scrollBottom.nativeElement.scrollTop = this.scrollBottom.nativeElement.scrollHeight;
-        } catch (err) {
-        }
-    }
-
-    ngOnInit() {
-        this.scrollToBottom();
-        this.connectorService.getLanguages().subscribe(
-            (languages) => {
-                this.languages = languages;
-            }
-        );
-    }
-
-    ngAfterViewChecked() {
-        this.scrollToBottom();
-    }
-
-    private loadVersionsForLanguage() {
-        this.connectorService.getVersions(this.input_language_dropdown).subscribe(
-            (response) => {
-                this.versions = response.versions;
-            }
-        );
-    }
-
-    private uploadTest() {
-        this.connectorService.uploadTest(this.input_language_dropdown,
-            this.input_version_dropdown,
-            this.input_test_textarea).subscribe(
-            (response) => {
-                console.log(response);
-            }
-        )
 
     }
+  }
+
+  increaseCurrentStep() {
+    this.currentStepIndex++;
+    this.scrollToBottom();
+  }
+
+  isSendButtonDisabled(): boolean {
+    switch (this.currenStep) {
+      case ChatState.SELECT_VERSION:
+        return !this.input_version_dropdown;
+      case ChatState.SELECT_LANGUAGE:
+        return !this.input_language_dropdown;
+      case ChatState.UPLOAD_TEST:
+        return !this.input_test_textarea;
+    }
+    return false;
+  }
+
+  scrollToBottom(): void {
+    try {
+      this.scrollBottom.nativeElement.scrollTop = this.scrollBottom.nativeElement.scrollHeight;
+    } catch (err) {
+    }
+  }
+
+  ngOnInit() {
+    this.scrollToBottom();
+    this.connectorService.getLanguages().subscribe(
+      (languages) => {
+        this.languages = languages;
+      }
+    );
+  }
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  formatTimeDifference(timestamp: string): string {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diffMs = now.getTime() - time.getTime();
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    const diffWeeks = Math.floor(diffDays / 7);
+    Math.floor(diffDays / 30);
+    if (diffSeconds < 60) {
+      return `${diffSeconds} Sekunden`;
+    } else if (diffMinutes < 60) {
+      return `${diffMinutes} Minuten`;
+    } else if (diffHours < 24) {
+      return `${diffHours} Stunden`;
+    } else if (diffDays < 7) {
+      return `${diffDays} Tage`;
+    } else if (diffWeeks < 4) {
+      return `${diffWeeks} Wochen`;
+    } else {
+      return time.toLocaleDateString('de-DE', {day: '2-digit', month: '2-digit', year: 'numeric'});
+    }
+  }
+
+  changeHistoryElement(entry: HistoryEntry) {
+    this.activeHistoryId = entry.id;
+    this.input_test_textarea = entry.testCases;
+    this.input_version_dropdown = entry.version;
+    this.input_language_dropdown = entry.language;
+    this.GENERATED_CODE = entry.generatedCode;
+    this.currenStep = ChatState.SELECT_VERSION;
+    this.currentStepIndex = 10;
+  }
+
+  newChat() {
+    this.GENERATED_CODE = '';
+    this.currenStep = ChatState.SELECT_LANGUAGE;
+    this.currenStep = 0;
+    this.input_version_dropdown = '';
+    this.input_test_textarea = '';
+    this.input_version_dropdown = '';
+
+    let uuid = uuidv4();
+
+    this.mockHistoryEntries.unshift({
+      id: uuid,
+      method: 'TBD..',
+      created_at: new Date().toISOString(),
+      version: '',
+      language: '',
+      testCases: '',
+      generatedCode: ''
+    });
+
+    this.activeHistoryId = uuid;
+  }
+
+  private loadVersionsForLanguage() {
+    this.connectorService.getVersions(this.input_language_dropdown).subscribe(
+      (response) => {
+        this.versions = response.versions;
+      }
+    );
+  }
+
+  private uploadTest() {
+    this.connectorService.uploadTest(this.input_language_dropdown,
+      this.input_version_dropdown,
+      this.input_test_textarea).subscribe(
+      (response) => {
+        console.log(response);
+      }
+    )
+  }
 }
