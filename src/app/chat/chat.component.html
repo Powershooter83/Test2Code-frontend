@@ -28,8 +28,13 @@
       <div class="history-element-wrapper">
         <p class="testcase">{{ entry.method }}</p>
         <div class="informations">
-          <div class="information-element">{{ entry.language }}</div>
+          <div *ngIf="entry.language"
+               class="information-element">{{ entry.language }}
+          </div>
           <div class="information-element">{{ formatTimeDifference(entry.created_at) }}</div>
+          <div *ngIf="entry.generatedCode"
+               class="information-element">GENERATED
+          </div>
         </div>
       </div>
       <div class="delete-icon">

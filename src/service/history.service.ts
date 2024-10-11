@@ -39,14 +39,15 @@ export class HistoryService {
     }
   }
 
-  addLanguage(activeHistoryId: string, input_languag_dropdown: any) {
+  addLanguage(activeHistoryId: string, input_languag_dropdown: any): HistoryEntry | undefined {
     let entry: HistoryEntry | undefined = this.getEntry(activeHistoryId);
     if (entry == undefined) {
-      return;
+      return undefined;
     }
     entry!.language = input_languag_dropdown;
     entry!.method = 'STEP: Version selection';
     this.updateEntry(entry);
+    return entry;
   }
 
   addVersion(activeHistoryId: string, input_version_dropdown: any) {
@@ -57,6 +58,7 @@ export class HistoryService {
     entry!.version = input_version_dropdown;
     entry!.method = 'STEP: Test upload';
     this.updateEntry(entry);
+    return entry;
   }
 
   addTests(activeHistoryId: string, input_tests_textarea: any) {
@@ -67,6 +69,7 @@ export class HistoryService {
     entry!.testCases = input_tests_textarea;
     entry!.method = this.extractFunctionNames(input_tests_textarea)[0];
     this.updateEntry(entry);
+    return entry;
   }
 
   updateIndex(activeHistoryId: string, currentStepIndex: number) {
@@ -85,6 +88,7 @@ export class HistoryService {
     }
     entry!.generatedCode = resultImplementation;
     this.updateEntry(entry);
+    return entry;
   }
 
   private updateEntry(entry: HistoryEntry) {

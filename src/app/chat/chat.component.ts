@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatFormField} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
@@ -66,6 +66,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   constructor(protected i18nService: I18nService,
               private themingService: ThemingService,
               private connectorService: ConnectorService,
+              private cdrf: ChangeDetectorRef,
               private historyService: HistoryService) {
   }
 
@@ -79,7 +80,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         this.increaseCurrentStep();
         this.currenStep = ChatState.SELECT_VERSION;
         this.loadVersionsForLanguage();
-        this.historyService.addLanguage(this.activeHistoryId, this.input_language_dropdown);
+
+        let updatedEntry = this.historyService.addLanguage(this.activeHistoryId, this.input_language_dropdown);
+        this.updateEntry(updatedEntry!);
 
         setTimeout(() => {
           this.increaseCurrentStep();
@@ -88,7 +91,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       case ChatState.SELECT_VERSION:
         this.increaseCurrentStep();
         this.currenStep = ChatState.UPLOAD_TEST;
-        this.historyService.addVersion(this.activeHistoryId, this.input_version_dropdown);
+        let updatedEntry2 = this.historyService.addVersion(this.activeHistoryId, this.input_version_dropdown);
+        this.updateEntry(updatedEntry2!);
 
         setTimeout(() => {
           this.increaseCurrentStep();
@@ -97,7 +101,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       case ChatState.UPLOAD_TEST:
         this.increaseCurrentStep();
         this.currenStep = ChatState.WAITING_FOR_RESULTS;
-        this.historyService.addTests(this.activeHistoryId, this.input_test_textarea);
+        let updatedEntry3 = this.historyService.addTests(this.activeHistoryId, this.input_test_textarea);
+        this.updateEntry(updatedEntry3!);
+
         this.uploadTest();
 
         for (let i = 1; i <= 4; i++) {
@@ -147,6 +153,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         this.languages = languages;
       }
     );
+
+    setInterval(() => {
+      this.cdrf.markForCheck();
+    }, 1000);
   }
 
   ngAfterViewChecked() {
@@ -221,6 +231,13 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.changeHistoryElement(this.historyEntries[0]);
   }
 
+  private updateEntry(entry: HistoryEntry) {
+    let index = this.historyEntries.findIndex(entry => entry.id === this.activeHistoryId);
+    if (index !== -1) {
+      this.historyEntries[index] = entry!;
+    }
+  }
+
   private loadVersionsForLanguage() {
     this.connectorService.getVersions(this.input_language_dropdown).subscribe(
       (response) => {
@@ -242,7 +259,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         });
 
         this.GENERATED_CODE = resultImplementation;
-        this.historyService.addGeneratedCode(this.activeHistoryId, resultImplementation);
+        let updatedEntry = this.historyService.addGeneratedCode(this.activeHistoryId, resultImplementation);
+        this.updateEntry(updatedEntry!);
+
       }
     )
   }
