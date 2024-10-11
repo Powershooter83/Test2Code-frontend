@@ -20,6 +20,11 @@
     </ul>
   </nav>
   <div *ngIf="isDrawerExtended && !settingsOpen" class="history">
+    <div class="history-searchbar">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" name="search" placeholder="Search"
+             type="tel">
+    </div>
     <div (click)="changeHistoryElement(entry)"
          (keypress)="changeHistoryElement(entry)"
          *ngFor="let entry of historyEntries"
@@ -84,8 +89,7 @@
           <mat-form-field class="text">
             <mat-select [(ngModel)]="input_version_dropdown"
                         [disabled]="currentStepIndex >= 3"
-                        placeholder="{{ i18nService.getTranslation(i18n.FORM_VERSION) }}"
-            >
+                        placeholder="{{ i18nService.getTranslation(i18n.FORM_VERSION) }}">
               <mat-option *ngFor="let version of versions" [value]="version">
                 {{ version }}
               </mat-option>
@@ -102,9 +106,14 @@
       </div>
       <div *ngIf="currentStepIndex > 3" class="message text-only">
         <div class="response">
-          <mat-form-field class="text" style="width: 500px">
-            <textarea [(ngModel)]="input_test_textarea"
+          <mat-form-field class="text"
+                          style="width: 600px">
+            <textarea #autosize="cdkTextareaAutosize"
+                      [(ngModel)]="input_test_textarea"
                       [disabled]="currentStepIndex >= 5"
+                      cdkAutosizeMaxRows="20"
+                      cdkAutosizeMinRows="3"
+                      cdkTextareaAutosize
                       matInput></textarea>
           </mat-form-field>
         </div>

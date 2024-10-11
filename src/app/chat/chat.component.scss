@@ -248,3 +248,41 @@ $dark-background_ai_bubble: #3f3f3f;
   margin-right: 20px;
 }
 
+
+.history-searchbar {
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.history-searchbar {
+  height: 40px;
+  background-color: #FFF;
+  width: 70%;
+  padding: 0 20px;
+  border-radius: 50px;
+  border: 1px solid #EEEEEE;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.history-searchbar .search-icon {
+  margin-left: -5px;
+  margin-right: 5px;
+}
+
+.history-searchbar input {
+  height: 38px;
+  width: 70%;
+  border-style: none;
+}
+
+.history-searchbar input:focus {
+  border-style: none;
+  outline-width: 0;
+}
+
+.history-searchbar:focus-within {
+  border: 1px solid #4f6ebd;
+}

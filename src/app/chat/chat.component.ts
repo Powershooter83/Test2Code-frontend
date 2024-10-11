@@ -1,10 +1,10 @@
 import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {MatFormField} from '@angular/material/form-field';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {ChatState} from '../../models/state.model';
 import {MatInput} from '@angular/material/input';
@@ -18,6 +18,8 @@ import {HistoryEntry} from '../../models/history.model';
 import {v4 as uuidv4} from 'uuid';
 import {HistoryService} from '../../service/history.service';
 import {SettingsComponent} from '../settings/settings.component';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-chat',
@@ -36,7 +38,13 @@ import {SettingsComponent} from '../settings/settings.component';
     HighlightAuto,
     NgClass,
     MatIconButton,
-    SettingsComponent
+    SettingsComponent,
+    MatLabel,
+    MatMenu,
+    MatMenuTrigger,
+    MatMenuItem,
+    MatButton,
+    CdkTextareaAutosize
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -60,6 +68,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   isDrawerExtended: boolean = false;
   historyEntries: HistoryEntry[] = [];
   settingsOpen: boolean = false;
+  search: any;
   protected readonly i18n = i18n;
   @ViewChild('scrollBottom') private scrollBottom!: ElementRef;
 
@@ -229,6 +238,24 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.historyService.removeEntry(id);
     this.historyEntries = this.historyService.getHistory();
     this.changeHistoryElement(this.historyEntries[0]);
+  }
+
+  filterHistory(filter: any) {
+    let historyEntries = this.historyService.getHistory();
+    if (!filter || filter.trim() === '') {
+      this.historyEntries = historyEntries;
+      return;
+    }
+
+    let filteredEntry: HistoryEntry[] = [];
+
+    for (let entry of historyEntries) {
+      if (entry.method.toLowerCase().startsWith(filter.toLowerCase())) {
+        filteredEntry.push(entry);
+      }
+    }
+
+    this.historyEntries = filteredEntry;
   }
 
   private updateEntry(entry: HistoryEntry) {
