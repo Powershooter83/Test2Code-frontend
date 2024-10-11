@@ -224,3 +224,27 @@ $dark-background_ai_bubble: #3f3f3f;
   background-color: #4f6ebd;
   color: #cfe5ff;
 }
+
+.history-element {
+  display: flex;
+  justify-content: space-between;
+}
+
+.delete-icon {
+  margin-top: 20px;
+  margin-right: 25px;
+  font-size: 25px;
+  display: none;
+  color: #C70000;
+}
+
+.history-element:hover {
+  .delete-icon {
+    display: block;
+  }
+}
+
+.history-element-active .delete-icon {
+  margin-right: 20px;
+}
+

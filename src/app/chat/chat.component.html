@@ -25,15 +25,17 @@
          *ngFor="let entry of historyEntries"
          [ngClass]="{'history-element-active': activeHistoryId === entry.id}"
          class="history-element">
-      <div>
+      <div class="history-element-wrapper">
         <p class="testcase">{{ entry.method }}</p>
-
         <div class="informations">
           <div class="information-element">{{ entry.language }}</div>
           <div class="information-element">{{ formatTimeDifference(entry.created_at) }}</div>
         </div>
-
-
+      </div>
+      <div class="delete-icon">
+        <mat-icon
+          (click)="deleteEntry(entry.id)">delete
+        </mat-icon>
       </div>
 
 

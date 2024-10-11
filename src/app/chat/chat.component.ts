@@ -215,6 +215,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.activeHistoryId = uuid;
   }
 
+  deleteEntry(id: string) {
+    this.historyService.removeEntry(id);
+    this.historyEntries = this.historyService.getHistory();
+    this.changeHistoryElement(this.historyEntries[0]);
+  }
+
   private loadVersionsForLanguage() {
     this.connectorService.getVersions(this.input_language_dropdown).subscribe(
       (response) => {
