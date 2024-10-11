@@ -1,5 +1,59 @@
-<div class="container">
-  <div class="chat" style="width: 100%; height: 100%; position: relative">
+<div [ngClass]="{'dark-theme': darkMode}" class="container">
+  <nav class="menu">
+    <ul class="items">
+      <li (click)="newChat()" class="item">
+        <mat-icon>add_circle</mat-icon>
+      </li>
+      <li (click)="settingsOpen = false"
+          [ngClass]="{'item-active': !settingsOpen}"
+          class="item item-active">
+        <mat-icon>forum</mat-icon>
+      </li>
+      <li (click)="isDrawerExtended = !isDrawerExtended" class="item">
+        <mat-icon *ngIf="!isDrawerExtended">open_in_full</mat-icon>
+        <mat-icon *ngIf="isDrawerExtended">close_fullscreen</mat-icon>
+      </li>
+      <li (click)="settingsOpen = !settingsOpen" [ngClass]="{'item-active': settingsOpen}"
+          class="item">
+        <mat-icon>settings</mat-icon>
+      </li>
+    </ul>
+  </nav>
+  <div *ngIf="isDrawerExtended && !settingsOpen" class="history">
+    <div class="history-searchbar">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" name="search" placeholder="Search"
+             type="tel">
+    </div>
+    <div (click)="changeHistoryElement(entry)"
+         (keypress)="changeHistoryElement(entry)"
+         *ngFor="let entry of historyEntries"
+         [ngClass]="{'history-element-active': activeHistoryId === entry.id}"
+         class="history-element">
+      <div class="history-element-wrapper">
+        <p class="testcase">{{ entry.method }}</p>
+        <div class="informations">
+          <div *ngIf="entry.language"
+               class="information-element">{{ entry.language }}
+          </div>
+          <div class="information-element">{{ formatTimeDifference(entry.created_at) }}</div>
+          <div *ngIf="entry.generatedCode"
+               class="information-element">GENERATED
+          </div>
+        </div>
+      </div>
+      <div class="delete-icon">
+        <mat-icon
+          (click)="deleteEntry(entry.id)">delete
+        </mat-icon>
+      </div>
+
+
+    </div>
+
+  </div>
+  <app-settings *ngIf="settingsOpen"></app-settings>
+  <div *ngIf="!settingsOpen" class="chat" style="width: 100%; height: 100%; position: relative">
     <div #scrollBottom class="messages-chat">
       <div class="message">
         <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'" class="photo">
@@ -35,8 +89,7 @@
           <mat-form-field class="text">
             <mat-select [(ngModel)]="input_version_dropdown"
                         [disabled]="currentStepIndex >= 3"
-                        placeholder="{{ i18nService.getTranslation(i18n.FORM_VERSION) }}"
-            >
+                        placeholder="{{ i18nService.getTranslation(i18n.FORM_VERSION) }}">
               <mat-option *ngFor="let version of versions" [value]="version">
                 {{ version }}
               </mat-option>
@@ -53,8 +106,15 @@
       </div>
       <div *ngIf="currentStepIndex > 3" class="message text-only">
         <div class="response">
-          <mat-form-field class="text" style="width: 500px">
-            <textarea [(ngModel)]="input_test_textarea" matInput></textarea>
+          <mat-form-field class="text"
+                          style="width: 600px">
+            <textarea #autosize="cdkTextareaAutosize"
+                      [(ngModel)]="input_test_textarea"
+                      [disabled]="currentStepIndex >= 5"
+                      cdkAutosizeMaxRows="20"
+                      cdkAutosizeMinRows="3"
+                      cdkTextareaAutosize
+                      matInput></textarea>
           </mat-form-field>
         </div>
       </div>
@@ -67,6 +127,9 @@
       </div>
       <div *ngIf="currentStepIndex > 5" class="message text-only">
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_DOCKER_STARTED) }}</p>
+      </div>
+      <div *ngIf="currentStepIndex > 8" class="message text-only">
+        <pre class="text"><code [highlightAuto]="GENERATED_CODE" lineNumbers></code></pre>
       </div>
     </div>
     <div class="submit-box">

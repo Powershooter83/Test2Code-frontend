@@ -3,4 +3,8 @@ export interface HistoryEntry {
   method: string;
   created_at: string;
   testCases: string;
+  language: string;
+  version: string;
+  generatedCode: string;
+  currentStep: number;
 }
