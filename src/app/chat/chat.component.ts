@@ -1,4 +1,4 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
@@ -20,6 +20,8 @@ import {HistoryService} from '../../service/history.service';
 import {SettingsComponent} from '../settings/settings.component';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
+import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-chat',
@@ -44,7 +46,8 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
     MatMenuTrigger,
     MatMenuItem,
     MatButton,
-    CdkTextareaAutosize
+    CdkTextareaAutosize,
+    CdkCopyToClipboard
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -71,6 +74,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   search: any;
   protected readonly i18n = i18n;
   @ViewChild('scrollBottom') private scrollBottom!: ElementRef;
+  private _snackBar = inject(MatSnackBar);
 
   constructor(protected i18nService: I18nService,
               private themingService: ThemingService,
@@ -258,6 +262,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.historyEntries = filteredEntry;
   }
 
+  sendCopySnackbar() {
+    this._snackBar.open('Tests in die Zwischenablage kopiert!', 'Schliessen', {
+      duration: 2500
+    });
+  }
+
   private updateEntry(entry: HistoryEntry) {
     let index = this.historyEntries.findIndex(entry => entry.id === this.activeHistoryId);
     if (index !== -1) {
@@ -292,4 +302,5 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       }
     )
   }
+
 }

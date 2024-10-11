@@ -129,7 +129,14 @@
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_DOCKER_STARTED) }}</p>
       </div>
       <div *ngIf="currentStepIndex > 8" class="message text-only">
-        <pre class="text"><code [highlightAuto]="GENERATED_CODE" lineNumbers></code></pre>
+        <pre class="text">
+          <code [highlightAuto]="GENERATED_CODE" lineNumbers></code>
+        </pre>
+        <button (click)="sendCopySnackbar()"
+                [cdkCopyToClipboard]="GENERATED_CODE"
+                class="copy-btn" mat-fab>
+          <mat-icon>content_copy</mat-icon>
+        </button>
       </div>
     </div>
     <div class="submit-box">
