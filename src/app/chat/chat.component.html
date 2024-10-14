@@ -1,5 +1,5 @@
 <div [ngClass]="{'dark-theme': darkMode}" class="container">
-  <nav class="menu">
+  <nav class="menu" style="width: 70px; min-width: 70px">
     <ul class="items">
       <li (click)="newChat()" class="item">
         <mat-icon>add_circle</mat-icon>
@@ -19,7 +19,7 @@
       </li>
     </ul>
   </nav>
-  <div *ngIf="isDrawerExtended && !settingsOpen" class="history">
+  <div *ngIf="isDrawerExtended && !settingsOpen && this.historyEntries.length > 0" class="history">
     <div class="history-searchbar">
       <mat-icon class="search-icon">search</mat-icon>
       <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" name="search" placeholder="Search"
@@ -52,8 +52,16 @@
     </div>
 
   </div>
-  <app-settings *ngIf="settingsOpen"></app-settings>
-  <div *ngIf="!settingsOpen" class="chat" style="width: 100%; height: 100%; position: relative">
+
+  <app-settings *ngIf="settingsOpen"
+                style="width: 100%; height: 100%"
+  ></app-settings>
+
+  <app-history-empty *ngIf="this.historyEntries.length == 0 && !settingsOpen"
+                     style="width: 100%; height: 100%"
+  ></app-history-empty>
+  <div *ngIf="!settingsOpen && this.historyEntries.length > 0" class="chat"
+       style="width: 100%; height: 100%; position: relative">
     <div #scrollBottom class="messages-chat">
       <div class="message">
         <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'" class="photo">
@@ -68,7 +76,7 @@
         <div class="response">
           <mat-form-field class="text">
             <mat-select [(ngModel)]="input_language_dropdown"
-                        [disabled]="!isBefore(this.currentStep, ChatState.USER_SELECT_LANGUAGE)"
+                        [disabled]="isAfter(this.currentStep, ChatState.USER_SELECT_LANGUAGE)"
                         placeholder="{{ i18nService.getTranslation(i18n.FORM_LANGUAGE) }}">
               <mat-option *ngFor="let language of languages" [value]="language">
                 {{ language }}
@@ -88,7 +96,7 @@
         <div class="response">
           <mat-form-field class="text">
             <mat-select [(ngModel)]="input_version_dropdown"
-                        [disabled]="!isBefore(this.currentStep, ChatState.USER_SELECT_VERSION)"
+                        [disabled]="isAfter(this.currentStep, ChatState.USER_SELECT_VERSION)"
                         placeholder="{{ i18nService.getTranslation(i18n.FORM_VERSION) }}">
               <mat-option *ngFor="let version of versions" [value]="version">
                 {{ version }}
@@ -110,7 +118,7 @@
                           style="width: 600px">
             <textarea #autosize="cdkTextareaAutosize"
                       [(ngModel)]="input_test_textarea"
-                      [disabled]="!isBefore(this.currentStep, ChatState.USER_UPLOAD_TEST)"
+                      [disabled]="isAfter(this.currentStep, ChatState.USER_UPLOAD_TEST)"
                       cdkAutosizeMaxRows="20"
                       cdkAutosizeMinRows="3"
                       cdkTextareaAutosize
@@ -143,7 +151,9 @@
       </div>
       <div *ngIf="isBefore(this.currentStep, ChatState.USER_QUESTION_RETRY)" class="message text-only">
         <div class="response">
-          <mat-radio-group [(ngModel)]="input_new_generation" class="text">
+          <mat-radio-group [(ngModel)]="input_new_generation"
+                           [disabled]="isAfter(this.currentStep, ChatState.USER_QUESTION_RETRY)"
+                           class="text">
             <mat-radio-button value="true">Ja</mat-radio-button>
             <mat-radio-button value="false">Nein</mat-radio-button>
           </mat-radio-group>

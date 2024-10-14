@@ -22,6 +22,14 @@ export function isBefore(currentStep: ChatState, compareStep: ChatState): boolea
   return compareIndex <= currentIndex;
 }
 
+export function isAfter(currentStep: ChatState, compareStep: ChatState): boolean {
+  const currentIndex = steps.indexOf(currentStep);
+  const compareIndex = steps.indexOf(compareStep);
+
+  return currentIndex > compareIndex;
+}
+
+
 export function getNextStep(currentStep: ChatState): ChatState {
   const currentIndex = steps.indexOf(currentStep);
 

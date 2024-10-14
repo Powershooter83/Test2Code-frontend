@@ -24,6 +24,7 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {HistoryEntry} from '../models/history.model';
 import {ChatComponent} from './chat/chat.component';
 import {ThemingService} from './theming.service';
+import {SettingsComponent} from './settings/settings.component';
 
 @Component({
   selector: 'app-root',
@@ -58,6 +59,7 @@ import {ThemingService} from './theming.service';
     MatMenuTrigger,
     ChatComponent,
     NgClass,
+    SettingsComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

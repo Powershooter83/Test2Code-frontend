@@ -92,6 +92,10 @@ export class HistoryService {
     return entry;
   }
 
+  deleteAll() {
+    localStorage.removeItem('history');
+  }
+
   private updateEntry(entry: HistoryEntry) {
     const entries = localStorage.getItem('history');
 

@@ -6,7 +6,7 @@ import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {ChatState, getNextStep, isBefore} from '../../models/state.model';
+import {ChatState, getNextStep, isAfter, isBefore} from '../../models/state.model';
 import {MatInput} from '@angular/material/input';
 import {I18nService} from '../i18n.service';
 import {i18n} from '../../models/i18n.model';
@@ -23,6 +23,7 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
+import {HistoryEmptyComponent} from '../history-empty/history-empty.component';
 
 @Component({
   selector: 'app-chat',
@@ -50,7 +51,8 @@ import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
     CdkTextareaAutosize,
     CdkCopyToClipboard,
     MatRadioButton,
-    MatRadioGroup
+    MatRadioGroup,
+    HistoryEmptyComponent
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -78,6 +80,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   protected readonly i18n = i18n;
   protected readonly ChatState = ChatState;
   protected readonly isBefore = isBefore;
+  protected readonly isAfter = isAfter;
   @ViewChild('scrollBottom') private scrollBottom!: ElementRef;
   private _snackBar = inject(MatSnackBar);
 
@@ -86,6 +89,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
               private connectorService: ConnectorService,
               private cdrf: ChangeDetectorRef,
               private historyService: HistoryService) {
+
+    if (localStorage.getItem('settingsOpen')) {
+      this.settingsOpen = true;
+      localStorage.removeItem('settingsOpen');
+    }
   }
 
   get darkMode(): boolean {
@@ -93,7 +101,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   continue() {
-    console.log(this.currentStep)
     switch (this.currentStep) {
       case ChatState.USER_SELECT_LANGUAGE:
         this.increaseCurrentStep();
@@ -145,8 +152,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.historyService.updateCurrentStep(this.activeHistoryId, this.currentStep);
   }
 
-  isSendButtonDisabled():
-    boolean {
+  isSendButtonDisabled(): boolean {
     switch (this.currentStep) {
       case ChatState.USER_SELECT_LANGUAGE:
         return !this.input_language_dropdown;
@@ -154,10 +160,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         return !this.input_version_dropdown;
       case ChatState.USER_UPLOAD_TEST:
         return !this.input_test_textarea;
-      case ChatState.BOT_MSG_QUESTION_RETRY:
+      case ChatState.USER_QUESTION_RETRY:
         return !this.input_new_generation;
     }
-    return false;
+    return true;
   }
 
   scrollToBottom()
@@ -192,11 +198,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.scrollToBottom();
   }
 
-  formatTimeDifference(timestamp
-                         :
-                         string
-  ):
-    string {
+  formatTimeDifference(timestamp: string): string {
     const now = new Date();
     const time = new Date(timestamp);
     const diffMs = now.getTime() - time.getTime();
@@ -221,16 +223,33 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  changeHistoryElement(entry
-                         :
-                         HistoryEntry
-  ) {
+  changeHistoryElement(entry: HistoryEntry) {
     this.activeHistoryId = entry.id;
     this.input_test_textarea = entry.testCases;
     this.input_version_dropdown = entry.version;
     this.input_language_dropdown = entry.language;
     this.GENERATED_CODE = entry.generatedCode;
-    this.currentStep = ChatState.USER_SELECT_LANGUAGE;
+
+
+    this.currentStep = entry.currentStep;
+    switch (entry.currentStep) {
+      case ChatState.BOT_MSG_ENTER_VERSION:
+        this.currentStep = ChatState.USER_SELECT_VERSION;
+        break;
+      case ChatState.BOT_MSG_ENTER_TEST:
+        this.currentStep = ChatState.USER_UPLOAD_TEST;
+        break;
+      case ChatState.BOT_MSG_UPLOAD_COMPLETED:
+      case ChatState.BOT_MSG_CONTAINER_STARTED:
+        if (this.GENERATED_CODE) {
+          this.currentStep = ChatState.USER_QUESTION_RETRY
+        } else {
+          this.uploadTest();
+          this.currentStep = ChatState.BOT_MSG_CONTAINER_STARTED;
+        }
+
+    }
+
   }
 
   newChat() {
@@ -263,7 +282,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   deleteEntry(id: string) {
     this.historyService.removeEntry(id);
     this.historyEntries = this.historyService.getHistory();
-    this.changeHistoryElement(this.historyEntries[0]);
+    if (this.historyEntries.length > 0) {
+      this.changeHistoryElement(this.historyEntries[0]);
+    }
   }
 
   filterHistory(filter: any) {

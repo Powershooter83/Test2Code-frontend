@@ -11,7 +11,7 @@ import fr_json from '../assets/i18n/fr.json';
 export class I18nService {
 
   private keyValuePairs: [i18n, string][] = [];
-  private readonly currentLanguage: string;
+  private currentLanguage: string;
 
   constructor() {
     this.currentLanguage = this.getBrowserLanguage();
@@ -23,9 +23,23 @@ export class I18nService {
     return translation ? translation[1] : "TRANSLATION_NOT_FOUND";
   }
 
-  private getBrowserLanguage(): string {
-    const lang = navigator.language || (navigator as any).language;
-    return lang.split('-')[0];
+  public getBrowserLanguage(): string {
+    let lang = localStorage.getItem('selectedLanguage');
+
+    if (!lang) {
+      lang = navigator.language || (navigator as any).language;
+      lang = lang!.split('-')[0];
+
+      localStorage.setItem('selectedLanguage', lang);
+    }
+    return lang;
+  }
+
+  public overrideBrowserLanguage(lang: string): void {
+    localStorage.setItem('selectedLanguage', lang);
+    this.currentLanguage = this.getBrowserLanguage();
+    this.loadTranslations();
+
   }
 
   private loadTranslations(): void {
