@@ -22,7 +22,7 @@
   <div *ngIf="isDrawerExtended && !settingsOpen && this.historyEntries.length > 0" class="history">
     <div class="history-searchbar">
       <mat-icon class="search-icon">search</mat-icon>
-      <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" name="search" placeholder="Search"
+      <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" name="search" placeholder="{{ i18nService.getTranslation(i18n.CHAT_SEARCH) }}"
              type="tel">
     </div>
     <div (click)="changeHistoryElement(entry)"

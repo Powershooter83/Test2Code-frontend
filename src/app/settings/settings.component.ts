@@ -3,6 +3,7 @@ import {MatButton} from '@angular/material/button';
 import {ICountry, NgxCountriesDropdownModule} from 'ngx-countries-dropdown';
 import {HistoryService} from '../../service/history.service';
 import {I18nService} from '../i18n.service';
+import {i18n} from "../../models/i18n.model";
 
 @Component({
   selector: 'app-settings',
@@ -16,7 +17,7 @@ import {I18nService} from '../i18n.service';
 })
 export class SettingsComponent {
 
-  constructor(private historyService: HistoryService, private i18nService: I18nService) {
+  constructor(private historyService: HistoryService, protected i18nService: I18nService) {
   }
 
   onCountryChange(country: ICountry) {
@@ -34,7 +35,7 @@ export class SettingsComponent {
   }
 
   onDeleteHistory() {
-    if (confirm("Are you sure to delete the History?")) {
+    if (confirm(this.i18nService.getTranslation(i18n.SETTINGS_DELETE_HISTORY_CONFIRMATION))) {
       this.historyService.deleteAll();
       localStorage.setItem('settingsOpen', 'true');
       location.reload();
@@ -49,4 +50,5 @@ export class SettingsComponent {
     return code;
   }
 
+    protected readonly i18n = i18n;
 }
