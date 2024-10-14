@@ -5,6 +5,16 @@
   "BOT_TESTCASES": "Perfekt, du kannst nun deinen Test eingeben.",
   "BOT_TESTCASES_UPLOADED": "Der Test wurde hochgeladen. Bitte warte einen Moment.",
   "BOT_DOCKER_STARTED": "Der Docker Container wurde gestartet.",
+  "BOT_MORE_TESTCASES": "Möchtest du von weiteren Tests Code generieren?",
+  "BOT_MORE_TESTCASES_OPTION_YES": "Ja",
+  "BOT_MORE_TESTCASES_OPTION_NO": "Nein",
+  "BOT_THANKS": "Danke für das verwenden von Test2Code!",
   "FORM_LANGUAGE": "Programmiersprache",
-  "FORM_VERSION": "Version"
+  "FORM_VERSION": "Version",
+  "START_MESSAGE": "Lade noch heute deinen Testfall hoch!",
+  "CHAT_SEARCH": "Suchen",
+  "SETTINGS_HEADING": "Einstellungen",
+  "SETTINGS_DELETE_HISTORY" : "Verlauf löschen",
+  "SETTINGS_DELETE_HISTORY_CONFIRMATION": "Bist du sicher, dass du den Verlauf löschen willst?",
+  "TEST_COPIED_MESSAGE": "Code in die Zwischenablage kopiert!"
 }
