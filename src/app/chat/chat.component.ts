@@ -1,8 +1,8 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
+import {NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -52,12 +52,13 @@ import {HistoryEmptyComponent} from '../history-empty/history-empty.component';
     CdkCopyToClipboard,
     MatRadioButton,
     MatRadioGroup,
-    HistoryEmptyComponent
+    HistoryEmptyComponent,
+    NgStyle
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
-export class ChatComponent implements OnInit, AfterViewChecked {
+export class ChatComponent implements OnInit {
   BOT_LOGO_URL = "assets/logos/profilepicture.png"
   input_version_dropdown: any;
   input_language_dropdown: any;
@@ -127,11 +128,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         this.updateEntry(updatedEntry3!);
 
         this.uploadTest();
+        this.scrollToBottom()
 
         setTimeout(() => {
           this.increaseCurrentStep()
         }, 2000);
-
         break;
       case ChatState.USER_QUESTION_RETRY:
         this.increaseCurrentStep();
@@ -140,10 +141,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
           this.currentStep = ChatState.BOT_MSG_FINISHED;
           this.historyService.updateCurrentStep(this.activeHistoryId, this.currentStep)
           this.historyService.setFinished(this.activeHistoryId);
+          this.scrollToBottom()
         } else {
           this.currentStep = ChatState.BOT_MSG_FINISHED;
           this.historyService.updateCurrentStep(this.activeHistoryId, this.currentStep)
           setTimeout(() => {
+            this.scrollToBottom()
             this.newChat_withValues()
           }, 500);
         }
@@ -201,9 +204,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     }, 1000);
   }
 
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
 
   formatTimeDifference(timestamp: string): string {
     const now = new Date();
@@ -236,7 +236,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.input_version_dropdown = entry.version;
     this.input_language_dropdown = entry.language;
     this.GENERATED_CODE = entry.generatedCode;
-    this.input_new_generation = entry.isFinished.toString();
+    this.input_new_generation = (!entry.isFinished).toString();
 
 
     this.currentStep = entry.currentStep;
@@ -286,6 +286,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   newChat() {
+    this.settingsOpen = false;
     this.GENERATED_CODE = '';
     this.currentStep = ChatState.USER_SELECT_LANGUAGE;
     this.input_version_dropdown = '';
@@ -387,5 +388,16 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         }, 1000);
       }
     )
+  }
+
+  getLengthOfTextField(): string {
+    switch (this.i18nService.getBrowserLanguage()) {
+      case 'en':
+        return '230px'
+      case 'fr':
+        return '260px'
+      default:
+        return '210px'
+    }
   }
 }
