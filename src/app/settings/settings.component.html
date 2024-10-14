@@ -1,6 +1,6 @@
 <div class="wrapper">
 
-  <p>Einstellungen</p>
+  <p>{{ i18nService.getTranslation(i18n.SETTINGS_HEADING) }}</p>
 
 
   <div>
@@ -14,7 +14,7 @@
     <button (click)="onDeleteHistory()"
             color="warn"
             mat-raised-button
-            style="margin-top: 15px; width: 100%">Delete History
+            style="margin-top: 15px; width: 100%">{{ i18nService.getTranslation(i18n.SETTINGS_DELETE_HISTORY) }}
     </button>
   </div>
 
