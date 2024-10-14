@@ -96,6 +96,16 @@ export class HistoryService {
     localStorage.removeItem('history');
   }
 
+  setFinished(activeHistoryId: string) {
+    let entry: HistoryEntry | undefined = this.getEntry(activeHistoryId);
+    if (entry == undefined) {
+      return;
+    }
+    entry!.isFinished = true;
+    this.updateEntry(entry);
+    return entry;
+  }
+
   private updateEntry(entry: HistoryEntry) {
     const entries = localStorage.getItem('history');
 

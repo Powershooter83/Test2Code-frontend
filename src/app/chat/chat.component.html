@@ -34,7 +34,9 @@
         <p class="testcase">{{ entry.method }}</p>
         <div class="informations">
           <div *ngIf="entry.language"
-               class="information-element">{{ entry.language }}
+               class="information-element"
+               style="color: orange;"
+          >{{ entry.language }}
           </div>
           <div class="information-element">{{ formatTimeDifference(entry.created_at) }}</div>
           <div *ngIf="entry.generatedCode"
@@ -161,7 +163,7 @@
       </div>
       <div *ngIf="currentStep == ChatState.BOT_MSG_FINISHED" class="message">
         <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'" class="photo">
-          <div class="online"></div>
+          <div class="online" style="background-color: #f0b332"></div>
         </div>
         <p class="text">Danke für das verwenden von Test2Code!</p>
       </div>

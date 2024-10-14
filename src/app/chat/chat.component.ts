@@ -58,8 +58,7 @@ import {HistoryEmptyComponent} from '../history-empty/history-empty.component';
   styleUrl: './chat.component.scss'
 })
 export class ChatComponent implements OnInit, AfterViewChecked {
-  BOT_LOGO_URL = 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'
-
+  BOT_LOGO_URL = "assets/logos/profilepicture.png"
   input_version_dropdown: any;
   input_language_dropdown: any;
   input_test_textarea: any;
@@ -139,6 +138,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
         if (!JSON.parse(this.input_new_generation)) {
           this.currentStep = ChatState.BOT_MSG_FINISHED;
+          this.historyService.updateCurrentStep(this.activeHistoryId, this.currentStep)
+          this.historyService.setFinished(this.activeHistoryId);
+        } else {
+          this.currentStep = ChatState.BOT_MSG_FINISHED;
+          this.historyService.updateCurrentStep(this.activeHistoryId, this.currentStep)
+          setTimeout(() => {
+            this.newChat_withValues()
+          }, 500);
         }
 
 
@@ -229,6 +236,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.input_version_dropdown = entry.version;
     this.input_language_dropdown = entry.language;
     this.GENERATED_CODE = entry.generatedCode;
+    this.input_new_generation = entry.isFinished.toString();
 
 
     this.currentStep = entry.currentStep;
@@ -250,6 +258,31 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     }
 
+  }
+
+  newChat_withValues() {
+    this.GENERATED_CODE = '';
+    this.currentStep = ChatState.USER_UPLOAD_TEST;
+    this.input_test_textarea = '';
+
+    let uuid = uuidv4();
+
+    let historyEntry = {
+      id: uuid,
+      method: 'STEP: language selection',
+      created_at: new Date().toISOString(),
+      version: this.input_version_dropdown,
+      language: this.input_language_dropdown,
+      testCases: '',
+      generatedCode: '',
+      currentStep: ChatState.USER_UPLOAD_TEST,
+      isFinished: false
+    }
+
+    this.historyEntries.unshift(historyEntry);
+    this.historyService.createEntry(historyEntry);
+
+    this.activeHistoryId = uuid;
   }
 
   newChat() {
@@ -327,10 +360,16 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   uploadTest() {
+    let uploadedHistoryId = this.activeHistoryId;
+
     this.connectorService.uploadTest(this.input_language_dropdown,
       this.input_version_dropdown,
       this.input_test_textarea).subscribe(
       (response) => {
+        if (uploadedHistoryId != this.activeHistoryId) {
+          return;
+        }
+
         let resultImplementation = "";
         response.test2code.forEach((item: any) => {
           const implementation = item.implementation;

@@ -22,10 +22,10 @@ export class ConnectorService {
 
   uploadTest(language: string, version: string, tests: string) {
     const params = new HttpParams()
-      .set('lang', language)
+      .set('language', language)
       .set('version', version)
       .set('testcases', tests);
-    
+
     return this.http.post<any>(this.apiUrl + '/testcases', {}, {params});
   }
 
