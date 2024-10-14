@@ -98,8 +98,7 @@ $dark-background_ai_bubble: #3f3f3f;
 
 .submit-box {
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
+  justify-content: space-between;
   width: 100%;
   position: absolute;
   bottom: 0;
@@ -135,6 +134,10 @@ $dark-background_ai_bubble: #3f3f3f;
   background-color: #8BC34A;
   border-radius: 13px;
   border: 3px solid #FAFAFA;
+}
+
+.online-orange {
+  background-color: #f0b332;
 }
 
 .desc-contact {

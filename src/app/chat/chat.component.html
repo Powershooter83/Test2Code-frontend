@@ -9,10 +9,6 @@
           class="item item-active">
         <mat-icon>forum</mat-icon>
       </li>
-      <li (click)="isDrawerExtended = !isDrawerExtended" class="item">
-        <mat-icon *ngIf="!isDrawerExtended">open_in_full</mat-icon>
-        <mat-icon *ngIf="isDrawerExtended">close_fullscreen</mat-icon>
-      </li>
       <li (click)="settingsOpen = !settingsOpen" [ngClass]="{'item-active': settingsOpen}"
           class="item">
         <mat-icon>settings</mat-icon>
@@ -22,7 +18,8 @@
   <div *ngIf="isDrawerExtended && !settingsOpen && this.historyEntries.length > 0" class="history">
     <div class="history-searchbar">
       <mat-icon class="search-icon">search</mat-icon>
-      <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" name="search" placeholder="{{ i18nService.getTranslation(i18n.CHAT_SEARCH) }}"
+      <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" name="search"
+             placeholder="{{ i18nService.getTranslation(i18n.CHAT_SEARCH) }}"
              type="tel">
     </div>
     <div (click)="changeHistoryElement(entry)"
@@ -64,10 +61,12 @@
   ></app-history-empty>
   <div *ngIf="!settingsOpen && this.historyEntries.length > 0" class="chat"
        style="width: 100%; height: 100%; position: relative">
-    <div #scrollBottom class="messages-chat">
+    <div #scrollBottom class="messages-chat" style="height: 85%">
       <div class="message">
         <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'" class="photo">
-          <div class="online"></div>
+          <div
+            [ngClass]="{'online-orange': currentStep == ChatState.BOT_MSG_FINISHED && this.input_new_generation.toString() == 'true'}"
+            class="online"></div>
         </div>
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_INTRODUCTION) }}</p>
       </div>
@@ -76,7 +75,7 @@
       </div>
       <div class="message text-only">
         <div class="response">
-          <mat-form-field class="text">
+          <mat-form-field [ngStyle]="{ 'width': getLengthOfTextField()}" class="text">
             <mat-select [(ngModel)]="input_language_dropdown"
                         [disabled]="isAfter(this.currentStep, ChatState.USER_SELECT_LANGUAGE)"
                         placeholder="{{ i18nService.getTranslation(i18n.FORM_LANGUAGE) }}">
@@ -90,7 +89,10 @@
       <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_ENTER_VERSION)" class="message">
         <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'"
              class="photo">
-          <div class="online"></div>
+          <div
+            [ngClass]="{'online-orange': currentStep == ChatState.BOT_MSG_FINISHED && this.input_new_generation.toString() == 'true'}"
+            class="online"
+          ></div>
         </div>
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_VERSION) }}</p>
       </div>
@@ -110,7 +112,9 @@
       <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_ENTER_TEST)" class="message">
         <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'"
              class="photo">
-          <div class="online"></div>
+          <div
+            [ngClass]="{'online-orange': currentStep == ChatState.BOT_MSG_FINISHED && this.input_new_generation.toString() == 'true'}"
+            class="online"></div>
         </div>
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_TESTCASES) }}</p>
       </div>
@@ -129,9 +133,12 @@
         </div>
       </div>
       <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_UPLOAD_COMPLETED)" class="message">
-        <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'"
-             class="photo">
-          <div class="online"></div>
+        <div
+          [style.background-image]="'url(' + BOT_LOGO_URL + ')'"
+          class="photo">
+          <div
+            [ngClass]="{'online-orange': currentStep == ChatState.BOT_MSG_FINISHED && this.input_new_generation.toString() == 'true'}"
+            class="online"></div>
         </div>
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_TESTCASES_UPLOADED) }}</p>
       </div>
@@ -163,12 +170,21 @@
       </div>
       <div *ngIf="currentStep == ChatState.BOT_MSG_FINISHED" class="message">
         <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'" class="photo">
-          <div class="online" style="background-color: #f0b332"></div>
+          <div
+            [ngClass]="{'online-orange': currentStep == ChatState.BOT_MSG_FINISHED && this.input_new_generation.toString() == 'true'}"
+            class="online"
+          ></div>
         </div>
         <p class="text">Danke für das verwenden von Test2Code!</p>
       </div>
     </div>
     <div class="submit-box">
+      <button (click)="isDrawerExtended = !isDrawerExtended"
+              class="submit-btn"
+              mat-fab>
+        <mat-icon *ngIf="!isDrawerExtended">open_in_full</mat-icon>
+        <mat-icon *ngIf="isDrawerExtended">close_fullscreen</mat-icon>
+      </button>
       <button (click)="continue()"
               [disabled]="isSendButtonDisabled()"
               aria-label="Example icon button with a heart icon"
