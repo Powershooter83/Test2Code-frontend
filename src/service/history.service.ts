@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HistoryEntry} from '../models/history.model';
 import {ChatState} from '../models/state.model';
-import {i18n} from '../models/i18n.model';
 import {I18nService} from '../app/i18n.service';
 
 @Injectable({
@@ -9,7 +8,7 @@ import {I18nService} from '../app/i18n.service';
 })
 export class HistoryService {
 
-  constructor( protected i18nService: I18nService) {
+  constructor(protected i18nService: I18nService) {
   }
 
   createEntry(entry: HistoryEntry) {
@@ -48,7 +47,7 @@ export class HistoryService {
       return undefined;
     }
     entry!.language = input_languag_dropdown;
-    entry!.method = this.i18nService.getTranslation(i18n.CHAT_STEP_VERSION_SELECTION);
+    entry!.method = 'STP2'
     this.updateEntry(entry);
     return entry;
   }
@@ -59,7 +58,7 @@ export class HistoryService {
       return;
     }
     entry!.version = input_version_dropdown;
-    entry!.method = this.i18nService.getTranslation(i18n.CHAT_STEP_UPLOAD);
+    entry!.method = 'STP3';
     this.updateEntry(entry);
     return entry;
   }

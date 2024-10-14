@@ -269,7 +269,7 @@ export class ChatComponent implements OnInit {
 
     let historyEntry = {
       id: uuid,
-      method: this.i18nService.getTranslation(i18n.CHAT_STEP_LANGUAGE_SELECTION),
+      method: 'STP1',
       created_at: new Date().toISOString(),
       version: this.input_version_dropdown,
       language: this.input_language_dropdown,
@@ -297,7 +297,7 @@ export class ChatComponent implements OnInit {
 
     let historyEntry = {
       id: uuid,
-      method: this.i18nService.getTranslation(i18n.CHAT_STEP_LANGUAGE_SELECTION),
+      method: 'STP1',
       created_at: new Date().toISOString(),
       version: '',
       language: '',
@@ -388,6 +388,19 @@ export class ChatComponent implements OnInit {
         }, 1000);
       }
     )
+  }
+
+  getTranslationOfMethodName(entry: HistoryEntry): String {
+    if (entry.method == 'STP1' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+      return this.i18nService.getTranslation(i18n.CHAT_STEP_LANGUAGE_SELECTION)
+    }
+    if (entry.method == 'STP2' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+      return this.i18nService.getTranslation(i18n.CHAT_STEP_VERSION_SELECTION)
+    }
+    if (entry.method == 'STP3' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+      return this.i18nService.getTranslation(i18n.CHAT_STEP_UPLOAD)
+    }
+    return entry.method;
   }
 
   getLengthOfTextField(): string {
