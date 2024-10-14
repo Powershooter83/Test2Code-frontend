@@ -156,15 +156,15 @@
         </button>
       </div>
       <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_QUESTION_RETRY)" class="message text-only">
-        <p class="text">Möchtest du von weiteren Tests Code generieren?</p>
+        <p class="text">{{ i18nService.getTranslation(i18n.BOT_MORE_TESTCASES) }}</p>
       </div>
       <div *ngIf="isBefore(this.currentStep, ChatState.USER_QUESTION_RETRY)" class="message text-only">
         <div class="response">
           <mat-radio-group [(ngModel)]="input_new_generation"
                            [disabled]="isAfter(this.currentStep, ChatState.USER_QUESTION_RETRY)"
                            class="text">
-            <mat-radio-button value="true">Ja</mat-radio-button>
-            <mat-radio-button value="false">Nein</mat-radio-button>
+            <mat-radio-button value="true">{{ i18nService.getTranslation(i18n.BOT_MORE_TESTCASES_OPTION_YES) }}</mat-radio-button>
+            <mat-radio-button value="false">{{ i18nService.getTranslation(i18n.BOT_MORE_TESTCASES_OPTION_NO) }}</mat-radio-button>
           </mat-radio-group>
         </div>
       </div>
@@ -175,7 +175,7 @@
             class="online"
           ></div>
         </div>
-        <p class="text">Danke für das verwenden von Test2Code!</p>
+        <p class="text">{{ i18nService.getTranslation(i18n.BOT_THANKS) }}</p>
       </div>
     </div>
     <div class="submit-box">
