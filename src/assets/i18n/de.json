@@ -13,8 +13,17 @@
   "FORM_VERSION": "Version",
   "START_MESSAGE": "Lade noch heute deinen Testfall hoch!",
   "CHAT_SEARCH": "Suchen",
+  "CHAT_STEP_LANGUAGE_SELECTION": "Schritt: Auswahl der Sprache",
+  "CHAT_STEP_VERSION_SELECTION": "Schritt: Auswahl der Version",
+  "CHAT_STEP_UPLOAD": "Schritt: Hochladen des Tests",
+  "CHAT_TIME_DIFFERENCE_SECONDS": "Sekunden",
+  "CHAT_TIME_DIFFERENCE_MINUTES": "Minuten",
+  "CHAT_TIME_DIFFERENCE_HOURS": "Stunden",
+  "CHAT_TIME_DIFFERENCE_DAYS": "Tage",
+  "CHAT_TIME_DIFFERENCE_WEEKS": "Wochen",
   "SETTINGS_HEADING": "Einstellungen",
   "SETTINGS_DELETE_HISTORY" : "Verlauf löschen",
   "SETTINGS_DELETE_HISTORY_CONFIRMATION": "Bist du sicher, dass du den Verlauf löschen willst?",
-  "TEST_COPIED_MESSAGE": "Code in die Zwischenablage kopiert!"
+  "TEST_COPIED_MESSAGE": "Code in die Zwischenablage kopiert!",
+  "TEST_COPIED_MESSAGE_CLOSE": "Schliessen"
 }

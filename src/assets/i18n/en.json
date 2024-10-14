@@ -13,8 +13,17 @@
   "FORM_VERSION": "Version",
   "START_MESSAGE": "Upload your test case today!",
   "CHAT_SEARCH": "Search",
+  "CHAT_STEP_LANGUAGE_SELECTION": "Step: Language selection",
+  "CHAT_STEP_VERSION_SELECTION": "Step: Version selection",
+  "CHAT_STEP_UPLOAD": "Step: Uploading the test ",
+  "CHAT_TIME_DIFFERENCE_SECONDS": "seconds",
+  "CHAT_TIME_DIFFERENCE_MINUTES": "minutes",
+  "CHAT_TIME_DIFFERENCE_HOURS": "hours",
+  "CHAT_TIME_DIFFERENCE_DAYS": "days",
+  "CHAT_TIME_DIFFERENCE_WEEKS": "weeks",
   "SETTINGS_HEADING": "Settings",
   "SETTINGS_DELETE_HISTORY" : "Delete History",
   "SETTINGS_DELETE_HISTORY_CONFIRMATION": "Are you sure to delete the history?",
-  "TEST_COPIED_MESSAGE": "Code copied to clipboard!"
+  "TEST_COPIED_MESSAGE": "Code copied to clipboard!",
+  "TEST_COPIED_MESSAGE_CLOSE": "Close"
 }

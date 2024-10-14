@@ -216,15 +216,15 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     const diffWeeks = Math.floor(diffDays / 7);
     Math.floor(diffDays / 30);
     if (diffSeconds < 60) {
-      return `${diffSeconds} Sekunden`;
+      return `${diffSeconds} ${this.i18nService.getTranslation(i18n.CHAT_TIME_DIFFERENCE_SECONDS)}`;
     } else if (diffMinutes < 60) {
-      return `${diffMinutes} Minuten`;
+      return `${diffMinutes} ${this.i18nService.getTranslation(i18n.CHAT_TIME_DIFFERENCE_MINUTES)}`;
     } else if (diffHours < 24) {
-      return `${diffHours} Stunden`;
+      return `${diffHours} ${this.i18nService.getTranslation(i18n.CHAT_TIME_DIFFERENCE_HOURS)}`;
     } else if (diffDays < 7) {
-      return `${diffDays} Tage`;
+      return `${diffDays} ${this.i18nService.getTranslation(i18n.CHAT_TIME_DIFFERENCE_DAYS)}`;
     } else if (diffWeeks < 4) {
-      return `${diffWeeks} Wochen`;
+      return `${diffWeeks} ${this.i18nService.getTranslation(i18n.CHAT_TIME_DIFFERENCE_WEEKS)}`;
     } else {
       return time.toLocaleDateString('de-DE', {day: '2-digit', month: '2-digit', year: 'numeric'});
     }
@@ -269,7 +269,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     let historyEntry = {
       id: uuid,
-      method: 'STEP: language selection',
+      method: this.i18nService.getTranslation(i18n.CHAT_STEP_LANGUAGE_SELECTION),
       created_at: new Date().toISOString(),
       version: this.input_version_dropdown,
       language: this.input_language_dropdown,
@@ -296,7 +296,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     let historyEntry = {
       id: uuid,
-      method: 'STEP: language selection',
+      method: this.i18nService.getTranslation(i18n.CHAT_STEP_LANGUAGE_SELECTION),
       created_at: new Date().toISOString(),
       version: '',
       language: '',
@@ -339,7 +339,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   sendCopySnackbar() {
-    this._snackBar.open('Tests in die Zwischenablage kopiert!', 'Schliessen', {
+    this._snackBar.open(this.i18nService.getTranslation(i18n.TEST_COPIED_MESSAGE), this.i18nService.getTranslation(i18n.TEST_COPIED_MESSAGE_CLOSE), {
       duration: 2500
     });
   }
