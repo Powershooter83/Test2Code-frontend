@@ -1,5 +1,5 @@
 <div [ngClass]="{'dark-theme': darkMode}" class="container">
-  <nav class="menu">
+  <nav class="menu" style="width: 70px; min-width: 70px">
     <ul class="items">
       <li (click)="newChat()" class="item">
         <mat-icon>add_circle</mat-icon>
@@ -19,7 +19,7 @@
       </li>
     </ul>
   </nav>
-  <div *ngIf="isDrawerExtended && !settingsOpen" class="history">
+  <div *ngIf="isDrawerExtended && !settingsOpen && this.historyEntries.length > 0" class="history">
     <div class="history-searchbar">
       <mat-icon class="search-icon">search</mat-icon>
       <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" name="search" placeholder="Search"
@@ -52,8 +52,16 @@
     </div>
 
   </div>
-  <app-settings *ngIf="settingsOpen"></app-settings>
-  <div *ngIf="!settingsOpen" class="chat" style="width: 100%; height: 100%; position: relative">
+
+  <app-settings *ngIf="settingsOpen"
+                style="width: 100%; height: 100%"
+  ></app-settings>
+
+  <app-history-empty *ngIf="this.historyEntries.length == 0 && !settingsOpen"
+                     style="width: 100%; height: 100%"
+  ></app-history-empty>
+  <div *ngIf="!settingsOpen && this.historyEntries.length > 0" class="chat"
+       style="width: 100%; height: 100%; position: relative">
     <div #scrollBottom class="messages-chat">
       <div class="message">
         <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'" class="photo">
@@ -68,7 +76,7 @@
         <div class="response">
           <mat-form-field class="text">
             <mat-select [(ngModel)]="input_language_dropdown"
-                        [disabled]="currentStepIndex >= 1"
+                        [disabled]="isAfter(this.currentStep, ChatState.USER_SELECT_LANGUAGE)"
                         placeholder="{{ i18nService.getTranslation(i18n.FORM_LANGUAGE) }}">
               <mat-option *ngFor="let language of languages" [value]="language">
                 {{ language }}
@@ -77,18 +85,18 @@
           </mat-form-field>
         </div>
       </div>
-      <div *ngIf="currentStepIndex > 0" class="message">
+      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_ENTER_VERSION)" class="message">
         <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'"
              class="photo">
           <div class="online"></div>
         </div>
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_VERSION) }}</p>
       </div>
-      <div *ngIf="currentStepIndex > 1" class="message text-only">
+      <div *ngIf="isBefore(this.currentStep, ChatState.USER_SELECT_VERSION)" class="message text-only">
         <div class="response">
           <mat-form-field class="text">
             <mat-select [(ngModel)]="input_version_dropdown"
-                        [disabled]="currentStepIndex >= 3"
+                        [disabled]="isAfter(this.currentStep, ChatState.USER_SELECT_VERSION)"
                         placeholder="{{ i18nService.getTranslation(i18n.FORM_VERSION) }}">
               <mat-option *ngFor="let version of versions" [value]="version">
                 {{ version }}
@@ -97,20 +105,20 @@
           </mat-form-field>
         </div>
       </div>
-      <div *ngIf="currentStepIndex > 2" class="message">
+      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_ENTER_TEST)" class="message">
         <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'"
              class="photo">
           <div class="online"></div>
         </div>
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_TESTCASES) }}</p>
       </div>
-      <div *ngIf="currentStepIndex > 3" class="message text-only">
+      <div *ngIf="isBefore(this.currentStep, ChatState.USER_UPLOAD_TEST)" class="message text-only">
         <div class="response">
           <mat-form-field class="text"
                           style="width: 600px">
             <textarea #autosize="cdkTextareaAutosize"
                       [(ngModel)]="input_test_textarea"
-                      [disabled]="currentStepIndex >= 5"
+                      [disabled]="isAfter(this.currentStep, ChatState.USER_UPLOAD_TEST)"
                       cdkAutosizeMaxRows="20"
                       cdkAutosizeMinRows="3"
                       cdkTextareaAutosize
@@ -118,22 +126,49 @@
           </mat-form-field>
         </div>
       </div>
-      <div *ngIf="currentStepIndex > 4" class="message">
+      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_UPLOAD_COMPLETED)" class="message">
         <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'"
              class="photo">
           <div class="online"></div>
         </div>
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_TESTCASES_UPLOADED) }}</p>
       </div>
-      <div *ngIf="currentStepIndex > 5" class="message text-only">
+      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_CONTAINER_STARTED)" class="message text-only">
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_DOCKER_STARTED) }}</p>
       </div>
-      <div *ngIf="currentStepIndex > 8" class="message text-only">
-        <pre class="text"><code [highlightAuto]="GENERATED_CODE" lineNumbers></code></pre>
+      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_GENERATED_CODE)" class="message text-only">
+        <pre class="text">
+          <code [highlightAuto]="GENERATED_CODE" lineNumbers></code>
+        </pre>
+        <button (click)="sendCopySnackbar()"
+                [cdkCopyToClipboard]="GENERATED_CODE"
+                class="copy-btn" mat-fab>
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_QUESTION_RETRY)" class="message text-only">
+        <p class="text">Möchtest du von weiteren Tests Code generieren?</p>
+      </div>
+      <div *ngIf="isBefore(this.currentStep, ChatState.USER_QUESTION_RETRY)" class="message text-only">
+        <div class="response">
+          <mat-radio-group [(ngModel)]="input_new_generation"
+                           [disabled]="isAfter(this.currentStep, ChatState.USER_QUESTION_RETRY)"
+                           class="text">
+            <mat-radio-button value="true">Ja</mat-radio-button>
+            <mat-radio-button value="false">Nein</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <div *ngIf="currentStep == ChatState.BOT_MSG_FINISHED" class="message">
+        <div [style.background-image]="'url(' + BOT_LOGO_URL + ')'" class="photo">
+          <div class="online"></div>
+        </div>
+        <p class="text">Danke für das verwenden von Test2Code!</p>
       </div>
     </div>
     <div class="submit-box">
-      <button (click)="continue()" [disabled]="isSendButtonDisabled()"
+      <button (click)="continue()"
+              [disabled]="isSendButtonDisabled()"
               aria-label="Example icon button with a heart icon"
               class="submit-btn"
               mat-fab>

@@ -1,4 +1,4 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
@@ -6,7 +6,7 @@ import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {ChatState} from '../../models/state.model';
+import {ChatState, getNextStep, isAfter, isBefore} from '../../models/state.model';
 import {MatInput} from '@angular/material/input';
 import {I18nService} from '../i18n.service';
 import {i18n} from '../../models/i18n.model';
@@ -20,6 +20,10 @@ import {HistoryService} from '../../service/history.service';
 import {SettingsComponent} from '../settings/settings.component';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
+import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
+import {HistoryEmptyComponent} from '../history-empty/history-empty.component';
 
 @Component({
   selector: 'app-chat',
@@ -44,7 +48,11 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
     MatMenuTrigger,
     MatMenuItem,
     MatButton,
-    CdkTextareaAutosize
+    CdkTextareaAutosize,
+    CdkCopyToClipboard,
+    MatRadioButton,
+    MatRadioGroup,
+    HistoryEmptyComponent
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -61,22 +69,31 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   versions: string[] = [];
   languages: string[] = [];
 
-  currenStep: ChatState = ChatState.SELECT_LANGUAGE;
-  currentStepIndex: number = 0;
+  currentStep: ChatState = ChatState.USER_SELECT_LANGUAGE;
   GENERATED_CODE: string = '';
 
   isDrawerExtended: boolean = false;
   historyEntries: HistoryEntry[] = [];
   settingsOpen: boolean = false;
   search: any;
+  input_new_generation: string = '';
   protected readonly i18n = i18n;
+  protected readonly ChatState = ChatState;
+  protected readonly isBefore = isBefore;
+  protected readonly isAfter = isAfter;
   @ViewChild('scrollBottom') private scrollBottom!: ElementRef;
+  private _snackBar = inject(MatSnackBar);
 
   constructor(protected i18nService: I18nService,
               private themingService: ThemingService,
               private connectorService: ConnectorService,
               private cdrf: ChangeDetectorRef,
               private historyService: HistoryService) {
+
+    if (localStorage.getItem('settingsOpen')) {
+      this.settingsOpen = true;
+      localStorage.removeItem('settingsOpen');
+    }
   }
 
   get darkMode(): boolean {
@@ -84,10 +101,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   continue() {
-    switch (this.currenStep) {
-      case ChatState.SELECT_LANGUAGE:
+    switch (this.currentStep) {
+      case ChatState.USER_SELECT_LANGUAGE:
         this.increaseCurrentStep();
-        this.currenStep = ChatState.SELECT_VERSION;
         this.loadVersionsForLanguage();
 
         let updatedEntry = this.historyService.addLanguage(this.activeHistoryId, this.input_language_dropdown);
@@ -97,9 +113,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
           this.increaseCurrentStep();
         }, 1000);
         break;
-      case ChatState.SELECT_VERSION:
+      case ChatState.USER_SELECT_VERSION:
         this.increaseCurrentStep();
-        this.currenStep = ChatState.UPLOAD_TEST;
         let updatedEntry2 = this.historyService.addVersion(this.activeHistoryId, this.input_version_dropdown);
         this.updateEntry(updatedEntry2!);
 
@@ -107,42 +122,53 @@ export class ChatComponent implements OnInit, AfterViewChecked {
           this.increaseCurrentStep();
         }, 1000);
         break;
-      case ChatState.UPLOAD_TEST:
+      case ChatState.USER_UPLOAD_TEST:
         this.increaseCurrentStep();
-        this.currenStep = ChatState.WAITING_FOR_RESULTS;
         let updatedEntry3 = this.historyService.addTests(this.activeHistoryId, this.input_test_textarea);
         this.updateEntry(updatedEntry3!);
 
         this.uploadTest();
 
-        for (let i = 1; i <= 4; i++) {
-          setTimeout(() => {
-            this.increaseCurrentStep();
-          }, i * 1000);
+        setTimeout(() => {
+          this.increaseCurrentStep()
+        }, 2000);
+
+        break;
+      case ChatState.USER_QUESTION_RETRY:
+        this.increaseCurrentStep();
+
+        if (!JSON.parse(this.input_new_generation)) {
+          this.currentStep = ChatState.BOT_MSG_FINISHED;
         }
+
 
     }
   }
 
   increaseCurrentStep() {
-    this.currentStepIndex++;
+    this.currentStep = getNextStep(this.currentStep);
+
     this.scrollToBottom();
-    this.historyService.updateIndex(this.activeHistoryId, this.currentStepIndex);
+    this.historyService.updateCurrentStep(this.activeHistoryId, this.currentStep);
   }
 
   isSendButtonDisabled(): boolean {
-    switch (this.currenStep) {
-      case ChatState.SELECT_VERSION:
-        return !this.input_version_dropdown;
-      case ChatState.SELECT_LANGUAGE:
+    switch (this.currentStep) {
+      case ChatState.USER_SELECT_LANGUAGE:
         return !this.input_language_dropdown;
-      case ChatState.UPLOAD_TEST:
+      case ChatState.USER_SELECT_VERSION:
+        return !this.input_version_dropdown;
+      case ChatState.USER_UPLOAD_TEST:
         return !this.input_test_textarea;
+      case ChatState.USER_QUESTION_RETRY:
+        return !this.input_new_generation;
     }
-    return false;
+    return true;
   }
 
-  scrollToBottom(): void {
+  scrollToBottom()
+    :
+    void {
     try {
       this.scrollBottom.nativeElement.scrollTop = this.scrollBottom.nativeElement.scrollHeight;
     } catch (err) {
@@ -203,14 +229,32 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.input_version_dropdown = entry.version;
     this.input_language_dropdown = entry.language;
     this.GENERATED_CODE = entry.generatedCode;
-    this.currenStep = ChatState.SELECT_LANGUAGE;
-    this.currentStepIndex = entry.currentStep;
+
+
+    this.currentStep = entry.currentStep;
+    switch (entry.currentStep) {
+      case ChatState.BOT_MSG_ENTER_VERSION:
+        this.currentStep = ChatState.USER_SELECT_VERSION;
+        break;
+      case ChatState.BOT_MSG_ENTER_TEST:
+        this.currentStep = ChatState.USER_UPLOAD_TEST;
+        break;
+      case ChatState.BOT_MSG_UPLOAD_COMPLETED:
+      case ChatState.BOT_MSG_CONTAINER_STARTED:
+        if (this.GENERATED_CODE) {
+          this.currentStep = ChatState.USER_QUESTION_RETRY
+        } else {
+          this.uploadTest();
+          this.currentStep = ChatState.BOT_MSG_CONTAINER_STARTED;
+        }
+
+    }
+
   }
 
   newChat() {
     this.GENERATED_CODE = '';
-    this.currenStep = ChatState.SELECT_LANGUAGE;
-    this.currentStepIndex = 0;
+    this.currentStep = ChatState.USER_SELECT_LANGUAGE;
     this.input_version_dropdown = '';
     this.input_test_textarea = '';
     this.input_version_dropdown = '';
@@ -226,6 +270,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       testCases: '',
       generatedCode: '',
       currentStep: 0,
+      isFinished: false
     }
 
     this.historyEntries.unshift(historyEntry);
@@ -237,7 +282,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   deleteEntry(id: string) {
     this.historyService.removeEntry(id);
     this.historyEntries = this.historyService.getHistory();
-    this.changeHistoryElement(this.historyEntries[0]);
+    if (this.historyEntries.length > 0) {
+      this.changeHistoryElement(this.historyEntries[0]);
+    }
   }
 
   filterHistory(filter: any) {
@@ -258,14 +305,20 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.historyEntries = filteredEntry;
   }
 
-  private updateEntry(entry: HistoryEntry) {
+  sendCopySnackbar() {
+    this._snackBar.open('Tests in die Zwischenablage kopiert!', 'Schliessen', {
+      duration: 2500
+    });
+  }
+
+  updateEntry(entry: HistoryEntry) {
     let index = this.historyEntries.findIndex(entry => entry.id === this.activeHistoryId);
     if (index !== -1) {
       this.historyEntries[index] = entry!;
     }
   }
 
-  private loadVersionsForLanguage() {
+  loadVersionsForLanguage() {
     this.connectorService.getVersions(this.input_language_dropdown).subscribe(
       (response) => {
         this.versions = response.versions;
@@ -273,12 +326,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     );
   }
 
-  private uploadTest() {
+  uploadTest() {
     this.connectorService.uploadTest(this.input_language_dropdown,
       this.input_version_dropdown,
       this.input_test_textarea).subscribe(
       (response) => {
-        this.currentStepIndex++;
         let resultImplementation = "";
         response.test2code.forEach((item: any) => {
           const implementation = item.implementation;
@@ -288,7 +340,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         this.GENERATED_CODE = resultImplementation;
         let updatedEntry = this.historyService.addGeneratedCode(this.activeHistoryId, resultImplementation);
         this.updateEntry(updatedEntry!);
+        this.increaseCurrentStep()
+        this.increaseCurrentStep()
 
+        setTimeout(() => {
+          this.increaseCurrentStep();
+        }, 1000);
       }
     )
   }

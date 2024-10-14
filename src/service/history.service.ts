@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HistoryEntry} from '../models/history.model';
+import {ChatState} from '../models/state.model';
 
 @Injectable({
   providedIn: 'root'
@@ -72,12 +73,12 @@ export class HistoryService {
     return entry;
   }
 
-  updateIndex(activeHistoryId: string, currentStepIndex: number) {
+  updateCurrentStep(activeHistoryId: string, currentStep: ChatState) {
     let entry: HistoryEntry | undefined = this.getEntry(activeHistoryId);
     if (entry == undefined) {
       return;
     }
-    entry!.currentStep = currentStepIndex;
+    entry!.currentStep = currentStep;
     this.updateEntry(entry);
   }
 
@@ -89,6 +90,10 @@ export class HistoryService {
     entry!.generatedCode = resultImplementation;
     this.updateEntry(entry);
     return entry;
+  }
+
+  deleteAll() {
+    localStorage.removeItem('history');
   }
 
   private updateEntry(entry: HistoryEntry) {

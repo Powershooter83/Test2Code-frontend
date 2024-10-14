@@ -1,1 +1,22 @@
-<p>settings works!</p>
+<div class="wrapper">
+
+  <p>Einstellungen</p>
+
+
+  <div>
+    <lib-country-list
+      (onCountryChange)="onCountryChange($event)"
+      [allowedCountryCodes]="['fr', 'de', 'us']"
+      [countryListConfig]="{ hideDialCode: true,hideSearch:true, displayLanguageCode: false, hideCode:true }"
+      [selectedCountryCode]="getLanguageCode()"
+      [selectedCountryConfig]="{ hideDialCode: true,hideSearch:true, displayLanguageCode: false, hideCode:true }"
+    ></lib-country-list>
+    <button (click)="onDeleteHistory()"
+            color="warn"
+            mat-raised-button
+            style="margin-top: 15px; width: 100%">Delete History
+    </button>
+  </div>
+
+
+</div>

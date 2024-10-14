@@ -7,4 +7,5 @@ export interface HistoryEntry {
   version: string;
   generatedCode: string;
   currentStep: number;
+  isFinished: boolean;
 }
