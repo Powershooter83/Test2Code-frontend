@@ -28,7 +28,7 @@
          [ngClass]="{'history-element-active': activeHistoryId === entry.id}"
          class="history-element">
       <div class="history-element-wrapper">
-        <p class="testcase">{{ entry.method }}</p>
+        <p class="testcase">{{ getTranslationOfMethodName(entry) }}</p>
         <div class="informations">
           <div *ngIf="entry.language"
                class="information-element"
@@ -163,8 +163,10 @@
           <mat-radio-group [(ngModel)]="input_new_generation"
                            [disabled]="isAfter(this.currentStep, ChatState.USER_QUESTION_RETRY)"
                            class="text">
-            <mat-radio-button value="true">{{ i18nService.getTranslation(i18n.BOT_MORE_TESTCASES_OPTION_YES) }}</mat-radio-button>
-            <mat-radio-button value="false">{{ i18nService.getTranslation(i18n.BOT_MORE_TESTCASES_OPTION_NO) }}</mat-radio-button>
+            <mat-radio-button value="true">{{ i18nService.getTranslation(i18n.BOT_MORE_TESTCASES_OPTION_YES) }}
+            </mat-radio-button>
+            <mat-radio-button value="false">{{ i18nService.getTranslation(i18n.BOT_MORE_TESTCASES_OPTION_NO) }}
+            </mat-radio-button>
           </mat-radio-group>
         </div>
       </div>
