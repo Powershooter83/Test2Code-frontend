@@ -248,6 +248,11 @@ export class ChatComponent implements OnInit {
     this.hasErrors = entry.hasError;
 
     this.currentStep = entry.currentStep;
+
+    if (this.currentStep == ChatState.BOT_MSG_ENTER_VERSION || this.currentStep == ChatState.USER_SELECT_VERSION) {
+      this.loadVersionsForLanguage();
+    }
+
     switch (entry.currentStep) {
       case ChatState.BOT_MSG_ENTER_VERSION:
         this.currentStep = ChatState.USER_SELECT_VERSION;
