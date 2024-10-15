@@ -24,7 +24,8 @@ import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {HistoryEmptyComponent} from '../history-empty/history-empty.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-chat',
@@ -55,7 +56,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatRadioGroup,
     HistoryEmptyComponent,
     NgStyle,
-    MatTooltipModule
+    FormsModule,
+    MatTooltipModule,
+    MatSlideToggle
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -80,6 +83,9 @@ export class ChatComponent implements OnInit {
   search: any;
   input_new_generation: string = '';
   hasErrors: boolean = false;
+
+  input_show_comments: boolean = true;
+
   protected readonly i18n = i18n;
   protected readonly ChatState = ChatState;
   protected readonly isBefore = isBefore;
@@ -394,6 +400,24 @@ export class ChatComponent implements OnInit {
     )
   }
 
+
+  getCopyToClipboard(): string {
+    return this.getProductiveCode().trimEnd();
+  }
+
+  getProductiveCode(): string {
+    if (this.input_show_comments) {
+      return this.GENERATED_CODE.concat('\n');
+    }
+
+    switch (this.input_language_dropdown) {
+      case 'java':
+        return this.stripJavaComments().concat('\n');
+      default:
+        return this.stripPythonComments().concat('\n');
+    }
+  }
+
   getTranslationOfMethodName(entry: HistoryEntry): String {
     if (entry.method == 'STP1' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
       return this.i18nService.getTranslation(i18n.CHAT_STEP_LANGUAGE_SELECTION)
@@ -416,5 +440,19 @@ export class ChatComponent implements OnInit {
       default:
         return '210px'
     }
+  }
+
+  private stripJavaComments(): string {
+    // Entferne nur die Kommentare und die dadurch entstandenen Leerzeilen
+    return this.GENERATED_CODE
+      .replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '')  // Entferne Kommentare
+      .replace(/^\s*[\r\n]/gm, '');             // Entferne leere Zeilen, die durch Kommentare entstanden
+  }
+
+  private stripPythonComments(): string {
+    // Entferne nur die Python-Kommentare und die dadurch entstandenen Leerzeilen
+    return this.GENERATED_CODE
+      .replace(/#.*$/gm, '')                    // Entferne Kommentare
+      .replace(/^\s*[\r\n]/gm, '');             // Entferne leere Zeilen, die durch Kommentare entstanden
   }
 }

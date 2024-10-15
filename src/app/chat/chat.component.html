@@ -153,10 +153,10 @@
       <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_GENERATED_CODE) && !this.hasErrors"
            class="message text-only">
         <pre class="text">
-          <code [highlightAuto]="GENERATED_CODE" lineNumbers></code>
+          <code [highlightAuto]="this.getProductiveCode()" lineNumbers></code>
         </pre>
         <button (click)="sendCopySnackbar()"
-                [cdkCopyToClipboard]="GENERATED_CODE"
+                [cdkCopyToClipboard]="getCopyToClipboard()"
                 class="copy-btn" mat-fab>
           <mat-icon [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_CLIPBOARD)">content_copy</mat-icon>
         </button>
@@ -190,16 +190,23 @@
       <button (click)="isDrawerExtended = !isDrawerExtended"
               class="submit-btn"
               mat-fab>
-        <mat-icon *ngIf="!isDrawerExtended" [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_HISTORY)">open_in_full</mat-icon>
-        <mat-icon *ngIf="isDrawerExtended" [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_HISTORY)">close_fullscreen</mat-icon>
+        <mat-icon *ngIf="!isDrawerExtended" [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_HISTORY)">
+          open_in_full
+        </mat-icon>
+        <mat-icon *ngIf="isDrawerExtended" [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_HISTORY)">
+          close_fullscreen
+        </mat-icon>
       </button>
-      <button (click)="continue()"
-              [disabled]="isSendButtonDisabled()"
-              aria-label="Example icon button with a heart icon"
-              class="submit-btn"
-              mat-fab>
-        <mat-icon [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_SEND)">send</mat-icon>
-      </button>
+      <div>
+        <mat-slide-toggle [(ngModel)]="input_show_comments" labelPosition="before">Comments</mat-slide-toggle>
+        <button (click)="continue()"
+                [disabled]="isSendButtonDisabled()"
+                aria-label="Example icon button with a heart icon"
+                class="submit-btn"
+                mat-fab>
+          <mat-icon [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_SEND)">send</mat-icon>
+        </button>
+      </div>
     </div>
   </div>
 </div>
