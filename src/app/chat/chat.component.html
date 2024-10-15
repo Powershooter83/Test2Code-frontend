@@ -147,11 +147,11 @@
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_DOCKER_STARTED) }}</p>
       </div>
       <div *ngIf="this.hasError" class="message text-only">
-        <p class="text" style="color: red">Die KI hat gerade ihren kreativen Flow verloren.</p>
+        <p class="text" style="color: red">{{ i18nService.getTranslation(i18n.CHAT_ERROR1) }}</p>
       </div>
 
       <div *ngIf="this.hasError" class="message text-only">
-        <p class="text" style="color: red;">Versuche es nochmal mit einem neuen Chat!</p>
+        <p class="text" style="color: red;">{{ i18nService.getTranslation(i18n.CHAT_ERROR2) }}</p>
       </div>
 
       <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_GENERATED_CODE) && !this.hasError"
