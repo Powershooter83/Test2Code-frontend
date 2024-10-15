@@ -24,6 +24,7 @@ import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {HistoryEmptyComponent} from '../history-empty/history-empty.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-chat',
@@ -53,7 +54,8 @@ import {HistoryEmptyComponent} from '../history-empty/history-empty.component';
     MatRadioButton,
     MatRadioGroup,
     HistoryEmptyComponent,
-    NgStyle
+    NgStyle,
+    MatTooltipModule
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'

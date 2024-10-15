@@ -26,5 +26,11 @@
   "SETTINGS_DELETE_HISTORY" : "Effacer l'historique",
   "SETTINGS_DELETE_HISTORY_CONFIRMATION": "Es-tu sûr de vouloir effacer l'historique ?",
   "TEST_COPIED_MESSAGE": "Code copié dans le presse-papiers !",
-  "TEST_COPIED_MESSAGE_CLOSE": "Fermer"
+  "TEST_COPIED_MESSAGE_CLOSE": "Fermer",
+  "TOOLTIP_NEW_CHAT": "Nouveau Chat",
+  "TOOLTIP_CHAT": "Chat",
+  "TOOLTIP_SETTINGS": "Réglages",
+  "TOOLTIP_HISTORY": "Historique",
+  "TOOLTIP_SEND": "Envoyer",
+  "TOOLTIP_CLIPBOARD": "Copier dans le presse-papiers"
 }
