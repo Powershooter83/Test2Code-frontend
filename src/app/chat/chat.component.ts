@@ -82,7 +82,7 @@ export class ChatComponent implements OnInit {
   settingsOpen: boolean = false;
   search: any;
   input_new_generation: string = '';
-  hasErrors: boolean = false;
+  hasError: boolean = false;
 
   input_show_comments: boolean = true;
 
@@ -245,7 +245,7 @@ export class ChatComponent implements OnInit {
     this.input_language_dropdown = entry.language;
     this.GENERATED_CODE = entry.generatedCode;
     this.input_new_generation = (!entry.isFinished).toString();
-    this.hasErrors = entry.hasError;
+    this.hasError = entry.hasError;
 
     this.currentStep = entry.currentStep;
 
@@ -277,6 +277,7 @@ export class ChatComponent implements OnInit {
     this.GENERATED_CODE = '';
     this.currentStep = ChatState.USER_UPLOAD_TEST;
     this.input_test_textarea = '';
+    this.hasError = false;
 
     let uuid = uuidv4();
 
@@ -306,6 +307,7 @@ export class ChatComponent implements OnInit {
     this.input_version_dropdown = '';
     this.input_test_textarea = '';
     this.input_version_dropdown = '';
+    this.hasError = false;
 
     let uuid = uuidv4();
 
@@ -357,6 +359,9 @@ export class ChatComponent implements OnInit {
       if (entry.method == 'STP3' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, entry.currentStep)) {
         method = this.i18nService.getTranslation(i18n.CHAT_STEP_UPLOAD)
       }
+      if (entry.method == '###STEP_FAILED_GENERATION###') {
+        method = this.i18nService.getTranslation(i18n.CHAT_STEP_FAILED)
+      }
 
       if (method.toLowerCase().startsWith(filter.toLowerCase())) {
         filteredEntry.push(entry);
@@ -386,7 +391,7 @@ export class ChatComponent implements OnInit {
   loadVersionsForLanguage() {
     this.connectorService.getVersions(this.input_language_dropdown).subscribe(
       (response) => {
-        this.versions = response.versions;
+        this.versions = response.versions.reverse();
       }
     );
   }
@@ -394,31 +399,37 @@ export class ChatComponent implements OnInit {
   uploadTest() {
     let uploadedHistoryId = this.activeHistoryId;
 
-    this.connectorService.uploadTest(this.input_language_dropdown,
-      this.input_version_dropdown,
-      this.input_test_textarea).subscribe(
-      (response) => {
-        if (uploadedHistoryId != this.activeHistoryId) {
-          return;
+    this.connectorService.uploadTest(this.input_language_dropdown, this.input_version_dropdown, this.input_test_textarea)
+      .subscribe(
+        (response) => {
+          if (response.error) {
+            let updatedEntry = this.historyService.addError(this.activeHistoryId);
+            this.updateEntry(updatedEntry!);
+            this.hasError = true;
+            return;
+          }
+
+          if (uploadedHistoryId != this.activeHistoryId) {
+            return;
+          }
+
+          let resultImplementation = "";
+          response.test2code.forEach((item: any) => {
+            const implementation = item.implementation;
+            resultImplementation += implementation + "\n";
+          });
+
+          this.GENERATED_CODE = resultImplementation;
+          let updatedEntry = this.historyService.addGeneratedCode(this.activeHistoryId, resultImplementation);
+          this.updateEntry(updatedEntry!);
+          this.increaseCurrentStep()
+          this.increaseCurrentStep()
+
+          setTimeout(() => {
+            this.increaseCurrentStep();
+          }, 1000);
         }
-
-        let resultImplementation = "";
-        response.test2code.forEach((item: any) => {
-          const implementation = item.implementation;
-          resultImplementation += implementation + "\n";
-        });
-
-        this.GENERATED_CODE = resultImplementation;
-        let updatedEntry = this.historyService.addGeneratedCode(this.activeHistoryId, resultImplementation);
-        this.updateEntry(updatedEntry!);
-        this.increaseCurrentStep()
-        this.increaseCurrentStep()
-
-        setTimeout(() => {
-          this.increaseCurrentStep();
-        }, 1000);
-      }
-    )
+      )
   }
 
 
@@ -448,6 +459,9 @@ export class ChatComponent implements OnInit {
     }
     if (entry.method == 'STP3' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, entry.currentStep)) {
       return this.i18nService.getTranslation(i18n.CHAT_STEP_UPLOAD)
+    }
+    if (entry.method == '###STEP_FAILED_GENERATION###') {
+      return this.i18nService.getTranslation(i18n.CHAT_STEP_FAILED)
     }
     return entry.method;
   }

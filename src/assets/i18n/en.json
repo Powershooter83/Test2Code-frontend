@@ -23,7 +23,7 @@
   "CHAT_TIME_DIFFERENCE_DAYS": "days",
   "CHAT_TIME_DIFFERENCE_WEEKS": "weeks",
   "SETTINGS_HEADING": "Settings",
-  "SETTINGS_DELETE_HISTORY" : "Delete History",
+  "SETTINGS_DELETE_HISTORY": "Delete History",
   "SETTINGS_DELETE_HISTORY_CONFIRMATION": "Are you sure to delete the history?",
   "TEST_COPIED_MESSAGE": "Code copied to clipboard!",
   "TEST_COPIED_MESSAGE_CLOSE": "Close",
@@ -32,5 +32,6 @@
   "TOOLTIP_SETTINGS": "Settings",
   "TOOLTIP_HISTORY": "History",
   "TOOLTIP_SEND": "Send",
-  "TOOLTIP_CLIPBOARD": "Copy to Clipboard"
+  "TOOLTIP_CLIPBOARD": "Copy to Clipboard",
+  "CHAT_STEP_FAILED": "Generation failed"
 }

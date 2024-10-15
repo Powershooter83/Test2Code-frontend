@@ -87,6 +87,17 @@ export class HistoryService {
     return entry;
   }
 
+  addError(activeHistoryId: string) {
+    let entry: HistoryEntry | undefined = this.getEntry(activeHistoryId);
+    if (entry == undefined) {
+      return;
+    }
+    entry!.method = '###STEP_FAILED_GENERATION###'
+    entry!.hasError = true;
+    this.updateEntry(entry)
+    return entry;
+  }
+
   updateCurrentStep(activeHistoryId: string, currentStep: ChatState) {
     let entry: HistoryEntry | undefined = this.getEntry(activeHistoryId);
     if (entry == undefined) {
