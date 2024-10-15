@@ -24,6 +24,7 @@ import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {HistoryEmptyComponent} from '../history-empty/history-empty.component';
+import {MatTooltip} from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-chat',
@@ -53,7 +54,8 @@ import {HistoryEmptyComponent} from '../history-empty/history-empty.component';
     MatRadioButton,
     MatRadioGroup,
     HistoryEmptyComponent,
-    NgStyle
+    NgStyle,
+    MatTooltip
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -77,6 +79,7 @@ export class ChatComponent implements OnInit {
   settingsOpen: boolean = false;
   search: any;
   input_new_generation: string = '';
+  hasErrors: boolean = false;
   protected readonly i18n = i18n;
   protected readonly ChatState = ChatState;
   protected readonly isBefore = isBefore;
@@ -176,8 +179,7 @@ export class ChatComponent implements OnInit {
     return true;
   }
 
-  scrollToBottom()
-    :
+  scrollToBottom():
     void {
     try {
       this.scrollBottom.nativeElement.scrollTop = this.scrollBottom.nativeElement.scrollHeight;
@@ -237,8 +239,8 @@ export class ChatComponent implements OnInit {
     this.input_language_dropdown = entry.language;
     this.GENERATED_CODE = entry.generatedCode;
     this.input_new_generation = (!entry.isFinished).toString();
-
-
+    this.hasErrors = entry.hasError;
+    
     this.currentStep = entry.currentStep;
     switch (entry.currentStep) {
       case ChatState.BOT_MSG_ENTER_VERSION:
@@ -276,7 +278,8 @@ export class ChatComponent implements OnInit {
       testCases: '',
       generatedCode: '',
       currentStep: ChatState.USER_UPLOAD_TEST,
-      isFinished: false
+      isFinished: false,
+      hasError: false
     }
 
     this.historyEntries.unshift(historyEntry);
@@ -295,7 +298,7 @@ export class ChatComponent implements OnInit {
 
     let uuid = uuidv4();
 
-    let historyEntry = {
+    let historyEntry: HistoryEntry = {
       id: uuid,
       method: 'STP1',
       created_at: new Date().toISOString(),
@@ -304,7 +307,8 @@ export class ChatComponent implements OnInit {
       testCases: '',
       generatedCode: '',
       currentStep: 0,
-      isFinished: false
+      isFinished: false,
+      hasError: false
     }
 
     this.historyEntries.unshift(historyEntry);

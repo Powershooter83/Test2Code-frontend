@@ -145,7 +145,13 @@
       <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_CONTAINER_STARTED)" class="message text-only">
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_DOCKER_STARTED) }}</p>
       </div>
-      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_GENERATED_CODE)" class="message text-only">
+      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_GENERATED_CODE) && this.hasErrors">
+        <p class="text">Die KI hat gerade ihren kreativen Flow verloren. Versuche es nochmal mit einem neuen Chat –
+          vielleicht ist sie dann in besserer Stimmung!</p>
+      </div>
+
+      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_GENERATED_CODE) && !this.hasErrors"
+           class="message text-only">
         <pre class="text">
           <code [highlightAuto]="GENERATED_CODE" lineNumbers></code>
         </pre>
