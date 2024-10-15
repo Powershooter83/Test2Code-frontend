@@ -8,4 +8,5 @@ export interface HistoryEntry {
   generatedCode: string;
   currentStep: number;
   isFinished: boolean;
+  hasError: boolean;
 }
