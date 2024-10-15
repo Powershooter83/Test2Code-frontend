@@ -37,7 +37,7 @@
           </div>
           <div class="information-element">{{ formatTimeDifference(entry.created_at) }}</div>
           <div *ngIf="entry.generatedCode"
-               class="information-element">GENERATED
+               class="information-element">{{ i18nService.getTranslation(i18n.CHAT_GENERATED_TAG) }}
           </div>
         </div>
       </div>
