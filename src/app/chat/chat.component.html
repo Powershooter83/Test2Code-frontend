@@ -202,7 +202,8 @@
         </mat-icon>
       </button>
       <div>
-        <mat-slide-toggle [(ngModel)]="input_show_comments" labelPosition="before">Comments</mat-slide-toggle>
+        <mat-checkbox [(ngModel)]="input_show_comments" style="position:relative;top: -7px;">Comments
+        </mat-checkbox>
         <button (click)="continue()"
                 [disabled]="isSendButtonDisabled()"
                 aria-label="Example icon button with a heart icon"

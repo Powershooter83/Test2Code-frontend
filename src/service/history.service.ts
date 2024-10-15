@@ -131,6 +131,25 @@ export class HistoryService {
     return entry;
   }
 
+  hasEmptyStart() {
+    const entries = localStorage.getItem('history');
+    if (entries) {
+      const historyArray = JSON.parse(entries);
+      const firstEntry: HistoryEntry = historyArray[0];
+
+
+      if (firstEntry == undefined) {
+        return false;
+      }
+
+      if (firstEntry.language == '') {
+
+        return true;
+      }
+    }
+    return false;
+  }
+
   private updateEntry(entry: HistoryEntry) {
     const entries = localStorage.getItem('history');
 

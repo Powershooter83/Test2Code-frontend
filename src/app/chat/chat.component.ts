@@ -26,6 +26,7 @@ import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {HistoryEmptyComponent} from '../history-empty/history-empty.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
+import {MatCheckbox} from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-chat',
@@ -58,7 +59,8 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
     NgStyle,
     FormsModule,
     MatTooltipModule,
-    MatSlideToggle
+    MatSlideToggle,
+    MatCheckbox
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -303,6 +305,10 @@ export class ChatComponent implements OnInit {
   }
 
   newChat() {
+    if (this.historyService.hasEmptyStart()) {
+      return;
+    }
+
     this.settingsOpen = false;
     this.GENERATED_CODE = '';
     this.currentStep = ChatState.USER_SELECT_LANGUAGE;
@@ -405,10 +411,16 @@ export class ChatComponent implements OnInit {
       .subscribe(
         (response) => {
           if (response.error) {
-            let updatedEntry = this.historyService.addError(this.activeHistoryId);
-            this.updateEntry(updatedEntry!);
-            this.hasError = true;
-            return;
+            if (!(typeof response.error === 'string' && response.error.trim() === "")
+              && !(typeof response.error === 'object' &&
+                response.error.source === "" &&
+                response.error.type === "" &&
+                response.error.message === "")) {
+              let updatedEntry = this.historyService.addError(this.activeHistoryId);
+              this.updateEntry(updatedEntry!);
+              this.hasError = true;
+              return;
+            }
           }
 
           if (uploadedHistoryId != this.activeHistoryId) {
