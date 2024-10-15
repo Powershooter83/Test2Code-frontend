@@ -11,7 +11,8 @@
   "BOT_THANKS": "Thank you for using Test2Code!",
   "FORM_LANGUAGE": "Programming language",
   "FORM_VERSION": "Version",
-  "START_MESSAGE": "Upload your test case today!",
+  "HISTORY_EMPTY_SLOGAN": "You write tests, we deliver reliable solutions.",
+  "HISTORY_EMPTY_BUTTON": "Click here to get started!",
   "CHAT_SEARCH": "Search",
   "CHAT_STEP_LANGUAGE_SELECTION": "Step: Language selection",
   "CHAT_STEP_VERSION_SELECTION": "Step: Version selection",
@@ -33,5 +34,7 @@
   "TOOLTIP_HISTORY": "History",
   "TOOLTIP_SEND": "Send",
   "TOOLTIP_CLIPBOARD": "Copy to Clipboard",
-  "CHAT_STEP_FAILED": "Generation failed"
+  "CHAT_STEP_FAILED": "Generation failed",
+  "CHAT_ERROR1": "The AI has just lost its creative flow.",
+  "CHAT_ERROR2": "Try again with a new chat!"
 }
