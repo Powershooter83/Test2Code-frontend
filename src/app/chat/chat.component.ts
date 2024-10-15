@@ -343,16 +343,16 @@ export class ChatComponent implements OnInit {
     for (let entry of historyEntries) {
       let method = entry.method
 
-      if (entry.method == 'STP1' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+      if (entry.method == 'STP1' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, entry.currentStep)) {
         method = this.i18nService.getTranslation(i18n.CHAT_STEP_LANGUAGE_SELECTION)
       }
-      if (entry.method == 'STP2' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+      if (entry.method == 'STP2' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, entry.currentStep)) {
         method = this.i18nService.getTranslation(i18n.CHAT_STEP_VERSION_SELECTION)
       }
-      if (entry.method == 'STP3' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+      if (entry.method == 'STP3' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, entry.currentStep)) {
         method = this.i18nService.getTranslation(i18n.CHAT_STEP_UPLOAD)
       }
-      
+
       if (method.toLowerCase().startsWith(filter.toLowerCase())) {
         filteredEntry.push(entry);
       }
@@ -435,13 +435,13 @@ export class ChatComponent implements OnInit {
   }
 
   getTranslationOfMethodName(entry: HistoryEntry): String {
-    if (entry.method == 'STP1' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+    if (entry.method == 'STP1' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, entry.currentStep)) {
       return this.i18nService.getTranslation(i18n.CHAT_STEP_LANGUAGE_SELECTION)
     }
-    if (entry.method == 'STP2' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+    if (entry.method == 'STP2' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, entry.currentStep)) {
       return this.i18nService.getTranslation(i18n.CHAT_STEP_VERSION_SELECTION)
     }
-    if (entry.method == 'STP3' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+    if (entry.method == 'STP3' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, entry.currentStep)) {
       return this.i18nService.getTranslation(i18n.CHAT_STEP_UPLOAD)
     }
     return entry.method;
