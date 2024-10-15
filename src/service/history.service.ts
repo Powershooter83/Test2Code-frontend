@@ -1,14 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HistoryEntry} from '../models/history.model';
 import {ChatState} from '../models/state.model';
-import {I18nService} from '../app/i18n.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HistoryService {
 
-  constructor(protected i18nService: I18nService) {
+  constructor() {
   }
 
   createEntry(entry: HistoryEntry) {
@@ -18,7 +17,7 @@ export class HistoryService {
     localStorage.setItem('history', JSON.stringify(entriesArray));
   }
 
-  extractFunctionNames(testCaseString: string): string[] {
+  extractFunctionNamesPython(testCaseString: string): string[] {
     const matches = testCaseString.match(/def (\w+)/g);
     if (matches) {
       return matches.map(match => match.split(' ')[1]);
@@ -26,6 +25,16 @@ export class HistoryService {
 
     return [];
   }
+
+  extractFunctionNamesJava(testCaseString: string): string[] {
+    const matches = testCaseString.match(/(public|private|protected)\s+[\w<>]+\s+(\w+)\s*\(/g);
+    if (matches) {
+      return matches.map(match => match.split(/\s+/).slice(-1)[0].split('(')[0]);
+    }
+
+    return [];
+  }
+
 
   getHistory(): HistoryEntry[] {
     const entries = localStorage.getItem('history');
@@ -69,8 +78,23 @@ export class HistoryService {
       return;
     }
     entry!.testCases = input_tests_textarea;
-    entry!.method = this.extractFunctionNames(input_tests_textarea)[0];
+    if (entry.language == 'python') {
+      entry!.method = this.extractFunctionNamesPython(input_tests_textarea)[0];
+    } else {
+      entry!.method = this.extractFunctionNamesJava(input_tests_textarea)[0];
+    }
     this.updateEntry(entry);
+    return entry;
+  }
+
+  addError(activeHistoryId: string) {
+    let entry: HistoryEntry | undefined = this.getEntry(activeHistoryId);
+    if (entry == undefined) {
+      return;
+    }
+    entry!.method = '###STEP_FAILED_GENERATION###'
+    entry!.hasError = true;
+    this.updateEntry(entry)
     return entry;
   }
 

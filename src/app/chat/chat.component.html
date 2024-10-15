@@ -15,7 +15,7 @@
       </li>
     </ul>
   </nav>
-  <div *ngIf="isDrawerExtended && !settingsOpen && this.historyEntries.length > 0" class="history">
+  <div *ngIf="isDrawerExtended && !settingsOpen && getHistoryEntries().length > 0" class="history">
     <div class="history-searchbar">
       <mat-icon class="search-icon">search</mat-icon>
       <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" name="search"
@@ -28,7 +28,8 @@
          [ngClass]="{'history-element-active': activeHistoryId === entry.id}"
          class="history-element">
       <div class="history-element-wrapper">
-        <p class="testcase">{{ getTranslationOfMethodName(entry) }}</p>
+        <p [ngStyle]="{ 'color': entry.hasError ? 'red' : 'black' }"
+           class="testcase">{{ getTranslationOfMethodName(entry) }}</p>
         <div class="informations">
           <div *ngIf="entry.language"
                class="information-element"
@@ -56,10 +57,10 @@
                 style="width: 100%; height: 100%"
   ></app-settings>
 
-  <app-history-empty *ngIf="this.historyEntries.length == 0 && !settingsOpen"
+  <app-history-empty *ngIf="this.getHistoryEntries().length == 0 && !settingsOpen"
                      style="width: 100%; height: 100%"
   ></app-history-empty>
-  <div *ngIf="!settingsOpen && this.historyEntries.length > 0" class="chat"
+  <div *ngIf="!settingsOpen && this.getHistoryEntries().length > 0" class="chat"
        style="width: 100%; height: 100%; position: relative">
     <div #scrollBottom class="messages-chat" style="height: 85%">
       <div class="message">
@@ -145,12 +146,15 @@
       <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_CONTAINER_STARTED)" class="message text-only">
         <p class="text">{{ i18nService.getTranslation(i18n.BOT_DOCKER_STARTED) }}</p>
       </div>
-      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_GENERATED_CODE) && this.hasErrors">
-        <p class="text">Die KI hat gerade ihren kreativen Flow verloren. Versuche es nochmal mit einem neuen Chat –
-          vielleicht ist sie dann in besserer Stimmung!</p>
+      <div *ngIf="this.hasError" class="message text-only">
+        <p class="text" style="color: red">Die KI hat gerade ihren kreativen Flow verloren.</p>
       </div>
 
-      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_GENERATED_CODE) && !this.hasErrors"
+      <div *ngIf="this.hasError" class="message text-only">
+        <p class="text" style="color: red;">Versuche es nochmal mit einem neuen Chat!</p>
+      </div>
+
+      <div *ngIf="isBefore(this.currentStep, ChatState.BOT_MSG_GENERATED_CODE) && !this.hasError"
            class="message text-only">
         <pre class="text">
           <code [highlightAuto]="this.getProductiveCode()" lineNumbers></code>

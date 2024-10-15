@@ -23,7 +23,7 @@
   "CHAT_TIME_DIFFERENCE_DAYS": "Tage",
   "CHAT_TIME_DIFFERENCE_WEEKS": "Wochen",
   "SETTINGS_HEADING": "Einstellungen",
-  "SETTINGS_DELETE_HISTORY" : "Verlauf löschen",
+  "SETTINGS_DELETE_HISTORY": "Verlauf löschen",
   "SETTINGS_DELETE_HISTORY_CONFIRMATION": "Bist du sicher, dass du den Verlauf löschen willst?",
   "TEST_COPIED_MESSAGE": "Code in die Zwischenablage kopiert!",
   "TEST_COPIED_MESSAGE_CLOSE": "Schliessen",
@@ -32,5 +32,6 @@
   "TOOLTIP_SETTINGS": "Einstellungen",
   "TOOLTIP_HISTORY": "Verlauf",
   "TOOLTIP_SEND": "Senden",
-  "TOOLTIP_CLIPBOARD": "In die Zwischenablage kopieren"
+  "TOOLTIP_CLIPBOARD": "In die Zwischenablage kopieren",
+  "CHAT_STEP_FAILED": "Generierung fehlgeschlagen"
 }
