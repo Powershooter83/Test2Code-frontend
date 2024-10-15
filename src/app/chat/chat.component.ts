@@ -203,7 +203,9 @@ export class ChatComponent implements OnInit {
     this.scrollToBottom();
     this.connectorService.getLanguages().subscribe(
       (languages) => {
-        this.languages = languages;
+        this.languages = languages.map((language: string) => {
+          return language.charAt(0).toUpperCase() + language.slice(1);
+        });
       }
     );
 
