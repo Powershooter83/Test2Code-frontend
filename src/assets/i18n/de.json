@@ -16,6 +16,7 @@
   "CHAT_STEP_LANGUAGE_SELECTION": "Schritt: Auswahl der Sprache",
   "CHAT_STEP_VERSION_SELECTION": "Schritt: Auswahl der Version",
   "CHAT_STEP_UPLOAD": "Schritt: Hochladen des Tests",
+  "CHAT_GENERATED_TAG": "Generiert",
   "CHAT_TIME_DIFFERENCE_SECONDS": "Sekunden",
   "CHAT_TIME_DIFFERENCE_MINUTES": "Minuten",
   "CHAT_TIME_DIFFERENCE_HOURS": "Stunden",
@@ -25,5 +26,11 @@
   "SETTINGS_DELETE_HISTORY" : "Verlauf löschen",
   "SETTINGS_DELETE_HISTORY_CONFIRMATION": "Bist du sicher, dass du den Verlauf löschen willst?",
   "TEST_COPIED_MESSAGE": "Code in die Zwischenablage kopiert!",
-  "TEST_COPIED_MESSAGE_CLOSE": "Schliessen"
+  "TEST_COPIED_MESSAGE_CLOSE": "Schliessen",
+  "TOOLTIP_NEW_CHAT": "Neuer Chat",
+  "TOOLTIP_CHAT": "Chat",
+  "TOOLTIP_SETTINGS": "Einstellungen",
+  "TOOLTIP_HISTORY": "Verlauf",
+  "TOOLTIP_SEND": "Senden",
+  "TOOLTIP_CLIPBOARD": "In die Zwischenablage kopieren"
 }

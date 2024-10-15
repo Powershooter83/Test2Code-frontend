@@ -16,6 +16,7 @@
   "CHAT_STEP_LANGUAGE_SELECTION": "Étape : Choix de la langue",
   "CHAT_STEP_VERSION_SELECTION": "Étape : Choix de la version",
   "CHAT_STEP_UPLOAD": "Étape : Télécharger le test",
+  "CHAT_GENERATED_TAG": "Génère",
   "CHAT_TIME_DIFFERENCE_SECONDS": "secondes",
   "CHAT_TIME_DIFFERENCE_MINUTES": "minutes",
   "CHAT_TIME_DIFFERENCE_HOURS": "heures",
@@ -25,5 +26,11 @@
   "SETTINGS_DELETE_HISTORY" : "Effacer l'historique",
   "SETTINGS_DELETE_HISTORY_CONFIRMATION": "Es-tu sûr de vouloir effacer l'historique ?",
   "TEST_COPIED_MESSAGE": "Code copié dans le presse-papiers !",
-  "TEST_COPIED_MESSAGE_CLOSE": "Fermer"
+  "TEST_COPIED_MESSAGE_CLOSE": "Fermer",
+  "TOOLTIP_NEW_CHAT": "Nouveau Chat",
+  "TOOLTIP_CHAT": "Chat",
+  "TOOLTIP_SETTINGS": "Réglages",
+  "TOOLTIP_HISTORY": "Historique",
+  "TOOLTIP_SEND": "Envoyer",
+  "TOOLTIP_CLIPBOARD": "Copier dans le presse-papiers"
 }

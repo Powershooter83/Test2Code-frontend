@@ -24,7 +24,7 @@ import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {HistoryEmptyComponent} from '../history-empty/history-empty.component';
-import {MatTooltip} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-chat',
@@ -55,7 +55,7 @@ import {MatTooltip} from '@angular/material/tooltip';
     MatRadioGroup,
     HistoryEmptyComponent,
     NgStyle,
-    MatTooltip
+    MatTooltipModule
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -240,7 +240,7 @@ export class ChatComponent implements OnInit {
     this.GENERATED_CODE = entry.generatedCode;
     this.input_new_generation = (!entry.isFinished).toString();
     this.hasErrors = entry.hasError;
-    
+
     this.currentStep = entry.currentStep;
     switch (entry.currentStep) {
       case ChatState.BOT_MSG_ENTER_VERSION:
