@@ -341,12 +341,28 @@ export class ChatComponent implements OnInit {
     let filteredEntry: HistoryEntry[] = [];
 
     for (let entry of historyEntries) {
-      if (entry.method.toLowerCase().startsWith(filter.toLowerCase())) {
+      let method = entry.method
+
+      if (entry.method == 'STP1' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+        method = this.i18nService.getTranslation(i18n.CHAT_STEP_LANGUAGE_SELECTION)
+      }
+      if (entry.method == 'STP2' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+        method = this.i18nService.getTranslation(i18n.CHAT_STEP_VERSION_SELECTION)
+      }
+      if (entry.method == 'STP3' && isBefore(ChatState.BOT_MSG_UPLOAD_COMPLETED, this.currentStep)) {
+        method = this.i18nService.getTranslation(i18n.CHAT_STEP_UPLOAD)
+      }
+      
+      if (method.toLowerCase().startsWith(filter.toLowerCase())) {
         filteredEntry.push(entry);
       }
     }
 
     this.historyEntries = filteredEntry;
+  }
+
+  getHistoryEntries() {
+    return this.historyService.getHistory();
   }
 
   sendCopySnackbar() {

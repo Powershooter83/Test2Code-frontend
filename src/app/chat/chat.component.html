@@ -15,7 +15,7 @@
       </li>
     </ul>
   </nav>
-  <div *ngIf="isDrawerExtended && !settingsOpen && this.historyEntries.length > 0" class="history">
+  <div *ngIf="isDrawerExtended && !settingsOpen && getHistoryEntries().length > 0" class="history">
     <div class="history-searchbar">
       <mat-icon class="search-icon">search</mat-icon>
       <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" name="search"
@@ -56,10 +56,10 @@
                 style="width: 100%; height: 100%"
   ></app-settings>
 
-  <app-history-empty *ngIf="this.historyEntries.length == 0 && !settingsOpen"
+  <app-history-empty *ngIf="this.getHistoryEntries().length == 0 && !settingsOpen"
                      style="width: 100%; height: 100%"
   ></app-history-empty>
-  <div *ngIf="!settingsOpen && this.historyEntries.length > 0" class="chat"
+  <div *ngIf="!settingsOpen && this.getHistoryEntries().length > 0" class="chat"
        style="width: 100%; height: 100%; position: relative">
     <div #scrollBottom class="messages-chat" style="height: 85%">
       <div class="message">
