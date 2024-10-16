@@ -11,7 +11,8 @@
   "BOT_THANKS": "Merci d'utiliser Test2Code !",
   "FORM_LANGUAGE": "Langage de programmation",
   "FORM_VERSION": "Version",
-  "START_MESSAGE": "Télécharge ton cas test dès aujourd'hui !",
+  "HISTORY_EMPTY_SLOGAN": "Tu écris des tests, nous fournissons des solutions fiables.",
+  "HISTORY_EMPTY_BUTTON": "Clique ici pour commencer !",
   "CHAT_SEARCH": "Rechercher",
   "CHAT_STEP_LANGUAGE_SELECTION": "Étape : Choix de la langue",
   "CHAT_STEP_VERSION_SELECTION": "Étape : Choix de la version",
@@ -33,5 +34,7 @@
   "TOOLTIP_HISTORY": "Historique",
   "TOOLTIP_SEND": "Envoyer",
   "TOOLTIP_CLIPBOARD": "Copier dans le presse-papiers",
-  "CHAT_STEP_FAILED": "Échec de la génération"
+  "CHAT_STEP_FAILED": "Échec de la génération",
+  "CHAT_ERROR1": "L'IA vient de perdre son flow créatif.",
+  "CHAT_ERROR2": "Réessaie avec un nouveau chat !"
 }

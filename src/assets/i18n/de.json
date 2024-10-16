@@ -11,7 +11,8 @@
   "BOT_THANKS": "Danke für das verwenden von Test2Code!",
   "FORM_LANGUAGE": "Programmiersprache",
   "FORM_VERSION": "Version",
-  "START_MESSAGE": "Lade noch heute deinen Testfall hoch!",
+  "HISTORY_EMPTY_SLOGAN": "Du schreibst Tests, wir liefern zuverlässige Lösungen.",
+  "HISTORY_EMPTY_BUTTON": "Klicke hier, um loszulegen!",
   "CHAT_SEARCH": "Suchen",
   "CHAT_STEP_LANGUAGE_SELECTION": "Schritt: Auswahl der Sprache",
   "CHAT_STEP_VERSION_SELECTION": "Schritt: Auswahl der Version",
@@ -33,5 +34,7 @@
   "TOOLTIP_HISTORY": "Verlauf",
   "TOOLTIP_SEND": "Senden",
   "TOOLTIP_CLIPBOARD": "In die Zwischenablage kopieren",
-  "CHAT_STEP_FAILED": "Generierung fehlgeschlagen"
+  "CHAT_STEP_FAILED": "Generierung fehlgeschlagen",
+  "CHAT_ERROR1": "Die KI hat gerade ihren kreativen Flow verloren.",
+  "CHAT_ERROR2": "Versuche es nochmal mit einem neuen Chat!"
 }
