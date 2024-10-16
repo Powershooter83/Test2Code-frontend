@@ -190,13 +190,16 @@ export class ChatComponent implements OnInit {
     return true;
   }
 
-  scrollToBottom():
-    void {
+  scrollToBottom(): void {
     try {
-      this.scrollBottom.nativeElement.scrollTop = this.scrollBottom.nativeElement.scrollHeight;
+      setTimeout(() => {
+        this.scrollBottom.nativeElement.scrollTop = this.scrollBottom.nativeElement.scrollHeight;
+      }, 50);
     } catch (err) {
+      console.error(err);
     }
   }
+
 
   ngOnInit() {
     if (localStorage.getItem('drawerExtended')) {
@@ -300,6 +303,16 @@ export class ChatComponent implements OnInit {
         }
 
     }
+
+    try {
+      setTimeout(() => {
+        this.scrollToBottom();
+      }, 50);
+    } catch (err) {
+      console.error(err);
+    }
+
+    this.scrollToBottom();
 
   }
 
