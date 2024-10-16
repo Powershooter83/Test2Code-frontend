@@ -250,9 +250,17 @@ export class ChatComponent implements OnInit {
   }
 
   changeHistoryElement(entry: HistoryEntry) {
+    this.activeHistoryId = entry.id;
+    this.currentStep = entry.currentStep;
+    this.input_new_generation = (!entry.isFinished).toString();
+    this.input_test_textarea = entry.testCases;
+    this.input_version_dropdown = entry.version;
+    this.input_test_textarea = entry.testCases;
+    this.GENERATED_CODE = entry.generatedCode;
+    this.hasError = entry.hasError;
+
     if ((!this.versions || this.versions.length === 0) || (!this.languages || this.languages.length === 0)) {
-      this.connectorService.getLanguages().subscribe(
-        (response) => {
+      this.connectorService.getLanguages().subscribe((response) => {
           this.languages = response.map((language: string) => {
             return language.charAt(0).toUpperCase() + language.slice(1);
           });
@@ -269,19 +277,6 @@ export class ChatComponent implements OnInit {
           }
         }
       );
-    }
-
-
-    this.activeHistoryId = entry.id;
-    this.input_test_textarea = entry.testCases;
-    this.GENERATED_CODE = entry.generatedCode;
-    this.input_new_generation = (!entry.isFinished).toString();
-    this.hasError = entry.hasError;
-
-    this.currentStep = entry.currentStep;
-
-    if (this.currentStep == ChatState.BOT_MSG_ENTER_VERSION || this.currentStep == ChatState.USER_SELECT_VERSION) {
-      this.loadVersionsForLanguage();
     }
 
     switch (entry.currentStep) {
@@ -341,7 +336,7 @@ export class ChatComponent implements OnInit {
     this.currentStep = ChatState.USER_SELECT_LANGUAGE;
     this.input_version_dropdown = '';
     this.input_test_textarea = '';
-    this.input_version_dropdown = '';
+    this.input_language_dropdown = '';
     this.hasError = false;
 
     let uuid = uuidv4();
@@ -365,7 +360,8 @@ export class ChatComponent implements OnInit {
     this.activeHistoryId = uuid;
   }
 
-  deleteEntry(id: string) {
+  deleteEntry(id: string, event: Event): void {
+    event.stopPropagation();
     this.historyService.removeEntry(id);
     this.historyEntries = this.historyService.getHistory();
     if (this.historyEntries.length > 0) {
