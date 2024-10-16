@@ -246,10 +246,29 @@ export class ChatComponent implements OnInit {
   }
 
   changeHistoryElement(entry: HistoryEntry) {
+
+    if ((!this.versions || this.versions.length === 0) || (!this.languages || this.languages.length === 0)) {
+      this.connectorService.getLanguages().subscribe(
+        (response) => {
+          this.languages = response.map((language: string) => {
+            return language.charAt(0).toUpperCase() + language.slice(1);
+          });
+
+          this.input_language_dropdown = entry.language;
+          this.connectorService.getVersions(entry.language).subscribe(
+            (response) => {
+              this.versions = response.versions.reverse();
+              this.input_test_textarea = entry.testCases;
+              this.input_version_dropdown = entry.version;
+            }
+          );
+        }
+      );
+    }
+
+
     this.activeHistoryId = entry.id;
     this.input_test_textarea = entry.testCases;
-    this.input_version_dropdown = entry.version;
-    this.input_language_dropdown = entry.language;
     this.GENERATED_CODE = entry.generatedCode;
     this.input_new_generation = (!entry.isFinished).toString();
     this.hasError = entry.hasError;
