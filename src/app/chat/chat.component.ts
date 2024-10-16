@@ -246,7 +246,6 @@ export class ChatComponent implements OnInit {
   }
 
   changeHistoryElement(entry: HistoryEntry) {
-
     if ((!this.versions || this.versions.length === 0) || (!this.languages || this.languages.length === 0)) {
       this.connectorService.getLanguages().subscribe(
         (response) => {
@@ -255,13 +254,15 @@ export class ChatComponent implements OnInit {
           });
 
           this.input_language_dropdown = entry.language;
-          this.connectorService.getVersions(entry.language).subscribe(
-            (response) => {
-              this.versions = response.versions.reverse();
-              this.input_test_textarea = entry.testCases;
-              this.input_version_dropdown = entry.version;
-            }
-          );
+          if (entry.language != '') {
+            this.connectorService.getVersions(entry.language).subscribe(
+              (response) => {
+                this.versions = response.versions.reverse();
+                this.input_test_textarea = entry.testCases;
+                this.input_version_dropdown = entry.version;
+              }
+            );
+          }
         }
       );
     }
