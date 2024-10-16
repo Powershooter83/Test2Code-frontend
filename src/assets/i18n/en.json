@@ -36,5 +36,6 @@
   "TOOLTIP_CLIPBOARD": "Copy to Clipboard",
   "CHAT_STEP_FAILED": "Generation failed",
   "CHAT_ERROR1": "The AI has just lost its creative flow.",
-  "CHAT_ERROR2": "Try again with a new chat!"
+  "CHAT_ERROR2": "Try again with a new chat!",
+  "CHAT_COMMENTS_TOGGLE": "Comments"
 }
