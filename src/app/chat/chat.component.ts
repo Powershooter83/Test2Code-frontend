@@ -199,6 +199,10 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (localStorage.getItem('drawerExtended')) {
+      this.isDrawerExtended = localStorage.getItem('drawerExtended') === 'true';
+    }
+
     this.historyEntries = this.historyService.getHistory();
     if (this.historyEntries.length == 0) {
       this.newChat();
@@ -512,6 +516,11 @@ export class ChatComponent implements OnInit {
       default:
         return '210px'
     }
+  }
+
+  openDrawer() {
+    this.isDrawerExtended = !this.isDrawerExtended
+    localStorage.setItem('drawerExtended', this.isDrawerExtended.toString());
   }
 
   private stripJavaComments(): string {

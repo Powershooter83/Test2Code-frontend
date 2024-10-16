@@ -191,7 +191,7 @@
       </div>
     </div>
     <div class="submit-box">
-      <button (click)="isDrawerExtended = !isDrawerExtended"
+      <button (click)="openDrawer()"
               class="submit-btn"
               mat-fab>
         <mat-icon *ngIf="!isDrawerExtended" [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_HISTORY)">
