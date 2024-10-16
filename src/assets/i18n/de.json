@@ -36,5 +36,6 @@
   "TOOLTIP_CLIPBOARD": "In die Zwischenablage kopieren",
   "CHAT_STEP_FAILED": "Generierung fehlgeschlagen",
   "CHAT_ERROR1": "Die KI hat gerade ihren kreativen Flow verloren.",
-  "CHAT_ERROR2": "Versuche es nochmal mit einem neuen Chat!"
+  "CHAT_ERROR2": "Versuche es nochmal mit einem neuen Chat!",
+  "CHAT_COMMENTS_TOGGLE": "Kommentare"
 }

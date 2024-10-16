@@ -202,7 +202,7 @@
         </mat-icon>
       </button>
       <div>
-        <mat-checkbox [(ngModel)]="input_show_comments" style="position:relative;top: -7px;">Comments
+        <mat-checkbox [(ngModel)]="input_show_comments" style="position:relative;top: -7px;">{{ i18nService.getTranslation(i18n.CHAT_COMMENTS_TOGGLE) }}
         </mat-checkbox>
         <button (click)="continue()"
                 [disabled]="isSendButtonDisabled()"
