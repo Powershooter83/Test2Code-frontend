@@ -256,25 +256,29 @@ export class ChatComponent implements OnInit {
     this.input_test_textarea = entry.testCases;
     this.input_version_dropdown = entry.version;
     this.input_test_textarea = entry.testCases;
+    this.input_language_dropdown = entry.language;
     this.GENERATED_CODE = entry.generatedCode;
     this.hasError = entry.hasError;
 
     if ((!this.versions || this.versions.length === 0) || (!this.languages || this.languages.length === 0)) {
       this.connectorService.getLanguages().subscribe((response) => {
-          this.languages = response.map((language: string) => {
-            return language.charAt(0).toUpperCase() + language.slice(1);
-          });
+          if (this.activeHistoryId == entry.id) {
+            this.languages = response.map((language: string) => {
+              return language.charAt(0).toUpperCase() + language.slice(1);
+            });
 
-          this.input_language_dropdown = entry.language;
-          if (entry.language != '') {
-            this.connectorService.getVersions(entry.language).subscribe(
-              (response) => {
-                this.versions = response.versions.reverse();
-                this.input_test_textarea = entry.testCases;
-                this.input_version_dropdown = entry.version;
-              }
-            );
+            this.input_language_dropdown = entry.language;
+            if (entry.language != '') {
+              this.connectorService.getVersions(entry.language).subscribe(
+                (response) => {
+                  this.versions = response.versions.reverse();
+                  this.input_test_textarea = entry.testCases;
+                  this.input_version_dropdown = entry.version;
+                }
+              );
+            }
           }
+
         }
       );
     }
