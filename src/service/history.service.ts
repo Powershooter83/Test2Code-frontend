@@ -78,7 +78,7 @@ export class HistoryService {
       return;
     }
     entry!.testCases = input_tests_textarea;
-    if (entry.language == 'python') {
+    if (entry.language.toLowerCase() == 'python') {
       entry!.method = this.extractFunctionNamesPython(input_tests_textarea)[0];
     } else {
       entry!.method = this.extractFunctionNamesJava(input_tests_textarea)[0];
@@ -105,6 +105,7 @@ export class HistoryService {
     }
     entry!.currentStep = currentStep;
     this.updateEntry(entry);
+    return entry;
   }
 
   addGeneratedCode(activeHistoryId: string, resultImplementation: string) {

@@ -150,12 +150,15 @@ export class ChatComponent implements OnInit {
 
         if (!JSON.parse(this.input_new_generation)) {
           this.currentStep = ChatState.BOT_MSG_FINISHED;
-          this.historyService.updateCurrentStep(this.activeHistoryId, this.currentStep)
+          let updatedEntry = this.historyService.updateCurrentStep(this.activeHistoryId, this.currentStep)
+          this.updateEntry(updatedEntry!);
           this.historyService.setFinished(this.activeHistoryId);
+          this.updateEntry(updatedEntry!);
           this.scrollToBottom()
         } else {
           this.currentStep = ChatState.BOT_MSG_FINISHED;
-          this.historyService.updateCurrentStep(this.activeHistoryId, this.currentStep)
+          let updatedEntry = this.historyService.updateCurrentStep(this.activeHistoryId, this.currentStep)
+          this.updateEntry(updatedEntry!);
           setTimeout(() => {
             this.scrollToBottom()
             this.newChat_withValues()
@@ -287,7 +290,7 @@ export class ChatComponent implements OnInit {
 
     let historyEntry = {
       id: uuid,
-      method: 'STP1',
+      method: 'STP3',
       created_at: new Date().toISOString(),
       version: this.input_version_dropdown,
       language: this.input_language_dropdown,
