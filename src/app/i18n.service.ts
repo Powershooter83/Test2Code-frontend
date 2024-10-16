@@ -3,6 +3,7 @@ import {i18n} from '../models/i18n.model';
 import de_json from '../assets/i18n/de.json';
 import en_json from '../assets/i18n/en.json';
 import fr_json from '../assets/i18n/fr.json';
+import ch_json from '../assets/i18n/ch.json';
 
 
 @Injectable({
@@ -49,6 +50,9 @@ export class I18nService {
         break;
       case 'fr':
         this.loadTranslationsFromFile(fr_json);
+        break;
+      case 'ch':
+        this.loadTranslationsFromFile(ch_json);
         break;
       default:
         this.loadTranslationsFromFile(en_json);

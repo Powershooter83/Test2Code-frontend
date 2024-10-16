@@ -17,6 +17,8 @@ import {i18n} from "../../models/i18n.model";
 })
 export class SettingsComponent {
 
+  protected readonly i18n = i18n;
+
   constructor(private historyService: HistoryService, protected i18nService: I18nService) {
   }
 
@@ -24,7 +26,17 @@ export class SettingsComponent {
     let language = country.language?.code;
 
     if (language) {
-      if (this.i18nService.getBrowserLanguage() == language) {
+      if (this.i18nService.getBrowserLanguage() == language && country.code != 'CH') {
+        return;
+      }
+      if (this.i18nService.getBrowserLanguage() == country.code.toLowerCase()) {
+        return;
+      }
+
+      if (country.code == 'CH') {
+        this.i18nService.overrideBrowserLanguage('ch')
+        localStorage.setItem('settingsOpen', 'true');
+        location.reload()
         return;
       }
       this.i18nService.overrideBrowserLanguage(language)
@@ -49,6 +61,4 @@ export class SettingsComponent {
     }
     return code;
   }
-
-    protected readonly i18n = i18n;
 }
