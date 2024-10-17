@@ -4,13 +4,20 @@ import {ICountry, NgxCountriesDropdownModule} from 'ngx-countries-dropdown';
 import {HistoryService} from '../../service/history.service';
 import {I18nService} from '../i18n.service';
 import {i18n} from "../../models/i18n.model";
+import {ThemingService} from '../theming.service';
+import {NgClass} from '@angular/common';
+import {MatCheckbox, MatCheckboxChange} from '@angular/material/checkbox';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
   imports: [
     MatButton,
-    NgxCountriesDropdownModule
+    NgxCountriesDropdownModule,
+    NgClass,
+    MatCheckbox,
+    FormsModule
   ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss'
@@ -19,7 +26,12 @@ export class SettingsComponent {
 
   protected readonly i18n = i18n;
 
-  constructor(private historyService: HistoryService, protected i18nService: I18nService) {
+  protected darkmode: boolean = false;
+
+  constructor(private historyService: HistoryService,
+              protected themingService: ThemingService,
+              protected i18nService: I18nService) {
+    this.darkmode = this.themingService.isDarkmode();
   }
 
   onCountryChange(country: ICountry) {
@@ -60,5 +72,10 @@ export class SettingsComponent {
       return 'us';
     }
     return code;
+  }
+
+  onDarkModeToggle($event: MatCheckboxChange) {
+    this.darkmode = $event.checked;
+    this.themingService.setDarkmode(this.darkmode);
   }
 }

@@ -1,5 +1,7 @@
-<div [ngClass]="{'dark-theme': darkMode}" class="container">
-  <nav class="menu" style="width: 70px; min-width: 70px">
+<div [ngClass]="{'dark-theme': themingService.isDarkmode()}" class="container">
+  <nav
+    class="menu"
+    style="width: 70px; min-width: 70px">
     <ul class="items">
       <li (click)="newChat()" class="item">
         <mat-icon [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_NEW_CHAT)">add_circle</mat-icon>
@@ -9,7 +11,9 @@
           class="item item-active">
         <mat-icon [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_CHAT)">forum</mat-icon>
       </li>
-      <li (click)="settingsOpen = !settingsOpen" [ngClass]="{'item-active': settingsOpen}"
+      <li (click)="settingsOpen = !settingsOpen"
+
+          [ngClass]="{'item-active': settingsOpen}"
           class="item">
         <mat-icon [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_SETTINGS)">settings</mat-icon>
       </li>
@@ -18,7 +22,8 @@
   <div *ngIf="isDrawerExtended && !settingsOpen && getHistoryEntries().length > 0" class="history">
     <div class="history-searchbar">
       <mat-icon class="search-icon">search</mat-icon>
-      <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" name="search"
+      <input (ngModelChange)="filterHistory($event)" [(ngModel)]="search" class="search"
+             name="search"
              placeholder="{{ i18nService.getTranslation(i18n.CHAT_SEARCH) }}"
              type="tel">
     </div>
@@ -201,8 +206,9 @@
           close_fullscreen
         </mat-icon>
       </button>
-      <div>
-        <mat-checkbox [(ngModel)]="input_show_comments" style="position:relative;top: -7px;">{{ i18nService.getTranslation(i18n.CHAT_COMMENTS_TOGGLE) }}
+      <div class="footer">
+        <mat-checkbox [(ngModel)]="input_show_comments"
+                      style="position:relative;top: -7px;">{{ i18nService.getTranslation(i18n.CHAT_COMMENTS_TOGGLE) }}
         </mat-checkbox>
         <button (click)="continue()"
                 [disabled]="isSendButtonDisabled()"

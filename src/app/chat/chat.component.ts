@@ -96,7 +96,7 @@ export class ChatComponent implements OnInit {
   private _snackBar = inject(MatSnackBar);
 
   constructor(protected i18nService: I18nService,
-              private themingService: ThemingService,
+              protected themingService: ThemingService,
               private connectorService: ConnectorService,
               private cdrf: ChangeDetectorRef,
               private historyService: HistoryService) {
@@ -107,9 +107,6 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  get darkMode(): boolean {
-    return this.themingService.isDarkmode();
-  }
 
   continue() {
     switch (this.currentStep) {
