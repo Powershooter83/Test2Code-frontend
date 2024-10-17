@@ -6,7 +6,7 @@
   <div>
     <mat-checkbox (change)="onDarkModeToggle($event)"
                   [(ngModel)]="darkmode"
-                  style=" margin-bottom: 10px">{{ i18nService.getTranslation(i18n.CHAT_COMMENTS_TOGGLE) }}
+                  style=" margin-bottom: 10px">{{ i18nService.getTranslation(i18n.SETTINGS_DARKMODE_TOGGLE) }}
     </mat-checkbox>
     <lib-country-list
       (onCountryChange)="onCountryChange($event)"
