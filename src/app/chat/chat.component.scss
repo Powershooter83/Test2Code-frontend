@@ -150,6 +150,11 @@ $light-background: #FFF;
 .history-element {
   border-bottom: solid 1px #E0E0E0;
   cursor: pointer;
+  height: 71px;
+}
+
+.dark-theme .history-element {
+  border-bottom: solid 1px #8e8e8e;
 }
 
 .dark-theme .history-element {
@@ -170,7 +175,7 @@ $light-background: #FFF;
 }
 
 .dark-theme .history-element-active {
-  border-right: solid 5px #5172c3;
+  border-right: solid 5px #8e8e8e;
 }
 
 
@@ -203,7 +208,7 @@ $light-background: #FFF;
 }
 
 .dark-theme .testcase {
-  color: white !important;
+  color: #8e8e8e !important;
 }
 
 .information-element {
@@ -258,6 +263,7 @@ $light-background: #FFF;
 
 .dark-theme .menu .items .item {
   color: #8d8d8d;
+  border-bottom: 1px solid #8e8e8e;
 }
 
 .menu .items .item-active {
@@ -342,7 +348,7 @@ $light-background: #FFF;
 }
 
 .dark-theme .history-searchbar:focus-within {
-  border: 1px solid green;
+  border: 1px solid #8e8e8e;
 }
 
 .dark-theme .history-searchbar,

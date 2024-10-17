@@ -3,7 +3,7 @@
     class="menu"
     style="width: 70px; min-width: 70px">
     <ul class="items">
-      <li (click)="newChat()" class="item">
+      <li (click)="newChat()" class="item" style="height: 62px">
         <mat-icon [matTooltip]="this.i18nService.getTranslation(i18n.TOOLTIP_NEW_CHAT)">add_circle</mat-icon>
       </li>
       <li (click)="settingsOpen = false"
@@ -81,7 +81,9 @@
       </div>
       <div class="message text-only">
         <div class="response">
-          <mat-form-field [ngStyle]="{ 'width': getLengthOfTextField()}" class="text">
+          <mat-form-field [ngStyle]="{ 'width': getLengthOfTextField()}" class="text"
+                          style="padding-bottom: 0"
+          >
             <mat-select [(ngModel)]="input_language_dropdown"
                         [disabled]="isAfter(this.currentStep, ChatState.USER_SELECT_LANGUAGE)"
                         placeholder="{{ i18nService.getTranslation(i18n.FORM_LANGUAGE) }}">
@@ -104,7 +106,7 @@
       </div>
       <div *ngIf="isBefore(this.currentStep, ChatState.USER_SELECT_VERSION)" class="message text-only">
         <div class="response">
-          <mat-form-field class="text">
+          <mat-form-field class="text" style="padding-bottom: 0">
             <mat-select [(ngModel)]="input_version_dropdown"
                         [disabled]="isAfter(this.currentStep, ChatState.USER_SELECT_VERSION)"
                         placeholder="{{ i18nService.getTranslation(i18n.FORM_VERSION) }}">

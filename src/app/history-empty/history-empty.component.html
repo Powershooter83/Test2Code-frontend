@@ -1,9 +1,15 @@
-<div class="wrapper">
-  <img alt="Logo"
+<div [ngClass]="{'dark-theme': themingService.isDarkmode()}" class="wrapper">
+  <img *ngIf="!themingService.isDarkmode()"
+       alt="Logo"
        src="assets/logos/logo-blue.png"
        width="30%">
-  <!--<p style="margin-top: 10px">{{ i18nService.getTranslation(i18n.START_MESSAGE) }}</p>-->
+  <img *ngIf="themingService.isDarkmode()"
+       alt="Logo"
+       src="assets/logos/logo-dark.png"
+       width="30%">
   <h6 style="margin-top: 30px"><b>{{ i18nService.getTranslation(i18n.HISTORY_EMPTY_SLOGAN) }}</b></h6>
-  <button style="margin-top: 30px" (click)="generateTest()" mat-flat-button>{{ i18nService.getTranslation(i18n.HISTORY_EMPTY_BUTTON) }}</button>
+  <button (click)="generateTest()" mat-flat-button
+          style="margin-top: 30px">{{ i18nService.getTranslation(i18n.HISTORY_EMPTY_BUTTON) }}
+  </button>
 </div>
 
